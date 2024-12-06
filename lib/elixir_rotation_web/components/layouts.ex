@@ -9,6 +9,7 @@ defmodule ElixirRotationWeb.Layouts do
   `use ElixirRotationWeb, :live_view`.
   """
   use ElixirRotationWeb, :html
+  import ElixirRotationWeb.UserAuth
 
   embed_templates "layouts/*"
 end
