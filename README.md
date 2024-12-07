@@ -1,4 +1,4 @@
-# ElixirRotation
+# Elixir Rotation
 
 To start your Phoenix server:
 

@@ -5,7 +5,6 @@ defmodule ElixirRotationWeb.PageHTML do
   See the `page_html` directory for all templates available.
   """
   use ElixirRotationWeb, :html
-  import ElixirRotationWeb.UserAuth
 
   embed_templates "page_html/*"
 end

@@ -15,6 +15,11 @@ defmodule ElixirRotationWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated,
+    error_handler: ElixirRotationWeb.AuthErrorHandler
+  end
+
   scope "/" do
     pipe_through :browser
 
@@ -22,10 +27,17 @@ defmodule ElixirRotationWeb.Router do
   end
 
   scope "/", ElixirRotationWeb do
-    pipe_through :browser
+    pipe_through [:browser]
 
     get "/", PageController, :home
   end
+
+  scope "/", ElixirRotationWeb do
+    pipe_through [:browser, :protected]
+
+    get "/dashboard", DashboardController, :index
+  end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", ElixirRotationWeb do

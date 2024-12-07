@@ -1,0 +1,25 @@
+<section>
+  <.flash_group flash={@flash} />
+  <h1 class="font-bold">Welcome back {@current_user.email}!</h1>
+
+  <p class="my-10">
+    This application allows you to create collections of tasks and people.
+    These are matched by an interval specified by you and call a webhook
+    defined by you afterwards.
+  </p>
+
+  <p class="my-4">
+    Start by creating some
+    <ul>
+      <li><.link href={~p"/"}>Collections</.link></li>
+      <li><.link href={~p"/"}>Tasks</.link></li>
+      <li><.link href={~p"/"}>People</.link></li>
+    </ul>
+  </p>
+
+  <p class="my-4">
+    While tasks and people are the names used by <em>Elixir rotation</em> to define
+    different sets for matching. You're free to insert everything you want, for example
+    server and songs or cuddly toy and babies.
+  </p>
+</section>
