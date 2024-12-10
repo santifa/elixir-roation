@@ -1,20 +1,13 @@
-<section>
+<.header>
+  Welcome back {@current_user.email}!
   <.flash_group flash={@flash} />
-  <h1 class="font-bold">Welcome back {@current_user.email}!</h1>
+</.header>
 
-  <p class="my-10">
+<section>
+  <p class="my-4">
     This application allows you to create collections of tasks and people.
     These are matched by an interval specified by you and call a webhook
     defined by you afterwards.
-  </p>
-
-  <p class="my-4">
-    Start by creating some
-    <ul>
-      <li><.link href={~p"/collections"} class="font-medium text-indigo-600 hover:text-indigo-500">Collections</.link></li>
-      <li><.link href={~p"/tasks"} class="font-medium text-indigo-600 hover:text-indigo-500">Tasks</.link></li>
-      <li><.link href={~p"/people"} class="font-medium text-indigo-600 hover:text-indigo-500">People</.link></li>
-    </ul>
   </p>
 
   <p class="my-4">
@@ -22,4 +15,18 @@
     different sets for matching. You're free to insert everything you want, for example
     server and songs or cuddly toy and babies.
   </p>
+
+  <p class="text-base my-4 font-semibold">Jump directly to some list:</p>
+  <div class="flex flex-row">
+    <.link href={~p"/collections"} class="basis-1/3">
+      <.button>List Collections</.button>
+    </.link>
+    <.link href={~p"/tasks"} class="basis-1/3">
+      <.button>List Tasks</.button>
+    </.link>
+    <.link href={~p"/people"} class="basis-1/3">
+      <.button>List People</.button>
+    </.link>
+  </div>
+
 </section>
