@@ -1,0 +1,18 @@
+<.header>
+  Collection <%= @collection.id %>
+  <:subtitle>This is a collection record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/collections/#{@collection}/edit"}>
+      <.button>Edit collection</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @collection.name %></:item>
+  <:item title="Description"><%= @collection.description %></:item>
+  <:item title="Webhook"><%= @collection.webhook %></:item>
+  <:item title="Match interval"><%= @collection.match_interval %></:item>
+</.list>
+
+<.back navigate={~p"/collections"}>Back to collections</.back>

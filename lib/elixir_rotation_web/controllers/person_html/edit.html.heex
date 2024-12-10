@@ -1,0 +1,8 @@
+<.header>
+  Edit Person <%= @person.id %>
+  <:subtitle>Use this form to manage person records in your database.</:subtitle>
+</.header>
+
+<.person_form changeset={@changeset} action={~p"/people/#{@person}"} />
+
+<.back navigate={~p"/people"}>Back to people</.back>

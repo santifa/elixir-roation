@@ -1,0 +1,8 @@
+<.header>
+  Edit Collection <%= @collection.id %>
+  <:subtitle>Use this form to manage collection records in your database.</:subtitle>
+</.header>
+
+<.collection_form changeset={@changeset} action={~p"/collections/#{@collection}"} />
+
+<.back navigate={~p"/collections"}>Back to collections</.back>

@@ -36,6 +36,11 @@ defmodule ElixirRotationWeb.Router do
     pipe_through [:browser, :protected]
 
     get "/dashboard", DashboardController, :index
+
+    # Resource bundles
+    resources "/tasks", TaskController
+    resources "/people", PersonController
+    resources "/collections", CollectionController
   end
 
 

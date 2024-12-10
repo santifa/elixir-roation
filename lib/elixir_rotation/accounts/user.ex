@@ -5,6 +5,9 @@ defmodule ElixirRotation.Accounts.User do
   schema "users" do
     pow_user_fields()
 
+    has_many :tasks, ElixirRotation.Tasks.Task
+    has_many :people, ElixirRotation.People.Person
+
     timestamps()
   end
 end
