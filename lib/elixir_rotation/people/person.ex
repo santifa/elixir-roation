@@ -5,7 +5,7 @@ defmodule ElixirRotation.People.Person do
   schema "people" do
     field :name, :string
     field :description, :string
-    field :user_id, :id
+    belongs_to :user, ElixirRotation.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
@@ -13,7 +13,8 @@ defmodule ElixirRotation.People.Person do
   @doc false
   def changeset(person, attrs) do
     person
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name, :description])
+    |> cast(attrs, [:name, :description, :user_id])
+    |> validate_required([:name, :description, :user_id])
+    |> assoc_constraint(:user)
   end
 end

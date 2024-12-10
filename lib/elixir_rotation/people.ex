@@ -13,12 +13,14 @@ defmodule ElixirRotation.People do
 
   ## Examples
 
-      iex> list_people()
+      iex> list_people(1)
       [%Person{}, ...]
 
   """
-  def list_people do
-    Repo.all(Person)
+  def list_people(user) do
+    Person
+    |> where([t], t.user_id == ^user.id)
+    |> Repo.all()
   end
 
   @doc """
@@ -28,14 +30,14 @@ defmodule ElixirRotation.People do
 
   ## Examples
 
-      iex> get_person!(123)
+      iex> get_person!(123, 1)
       %Person{}
 
-      iex> get_person!(456)
+      iex> get_person!(456, -1)
       ** (Ecto.NoResultsError)
 
   """
-  def get_person!(id), do: Repo.get!(Person, id)
+  def get_person!(id, user), do: Repo.get_by!(Person, id: id, user_id: user.id)
 
   @doc """
   Creates a person.

@@ -5,7 +5,8 @@ defmodule ElixirRotationWeb.TaskController do
   alias ElixirRotation.Tasks.Task
 
   def index(conn, _params) do
-    tasks = Tasks.list_tasks()
+    user = Pow.Plug.current_user(conn)
+    tasks = Tasks.list_tasks(user)
     render(conn, :index, tasks: tasks)
   end
 
@@ -15,6 +16,9 @@ defmodule ElixirRotationWeb.TaskController do
   end
 
   def create(conn, %{"task" => task_params}) do
+    user = Pow.Plug.current_user(conn)
+    task_params = Map.put(task_params, "user_id", user.id)
+
     case Tasks.create_task(task_params) do
       {:ok, task} ->
         conn
@@ -27,18 +31,21 @@ defmodule ElixirRotationWeb.TaskController do
   end
 
   def show(conn, %{"id" => id}) do
-    task = Tasks.get_task!(id)
+    user = Pow.Plug.current_user(conn)
+    task = Tasks.get_task!(id, user)
     render(conn, :show, task: task)
   end
 
   def edit(conn, %{"id" => id}) do
-    task = Tasks.get_task!(id)
+    user = Pow.Plug.current_user(conn)
+    task = Tasks.get_task!(id, user)
     changeset = Tasks.change_task(task)
     render(conn, :edit, task: task, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do
-    task = Tasks.get_task!(id)
+    user = Pow.Plug.current_user(conn)
+    task = Tasks.get_task!(id, user)
 
     case Tasks.update_task(task, task_params) do
       {:ok, task} ->
@@ -52,7 +59,8 @@ defmodule ElixirRotationWeb.TaskController do
   end
 
   def delete(conn, %{"id" => id}) do
-    task = Tasks.get_task!(id)
+    user = Pow.Plug.current_user(conn)
+    task = Tasks.get_task!(id, user)
     {:ok, _task} = Tasks.delete_task(task)
 
     conn

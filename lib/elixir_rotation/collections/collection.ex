@@ -7,7 +7,7 @@ defmodule ElixirRotation.Collections.Collection do
     field :description, :string
     field :webhook, :string
     field :match_interval, :string
-    field :user_id, :id
+    belongs_to :user, ElixirRotation.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
@@ -15,7 +15,8 @@ defmodule ElixirRotation.Collections.Collection do
   @doc false
   def changeset(collection, attrs) do
     collection
-    |> cast(attrs, [:name, :description, :webhook, :match_interval])
-    |> validate_required([:name, :description, :webhook, :match_interval])
+    |> cast(attrs, [:name, :description, :webhook, :match_interval, :user_id])
+    |> validate_required([:name, :description, :webhook, :match_interval, :user_id])
+    |> assoc_constraint(:user)
   end
 end

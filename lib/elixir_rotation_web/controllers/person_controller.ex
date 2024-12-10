@@ -5,7 +5,8 @@ defmodule ElixirRotationWeb.PersonController do
   alias ElixirRotation.People.Person
 
   def index(conn, _params) do
-    people = People.list_people()
+    user = Pow.Plug.current_user(conn)
+    people = People.list_people(user)
     render(conn, :index, people: people)
   end
 
@@ -15,6 +16,9 @@ defmodule ElixirRotationWeb.PersonController do
   end
 
   def create(conn, %{"person" => person_params}) do
+    user = Pow.Plug.current_user(conn)
+    person_params = Map.put(person_params, "user_id", user.id)
+
     case People.create_person(person_params) do
       {:ok, person} ->
         conn
@@ -27,18 +31,21 @@ defmodule ElixirRotationWeb.PersonController do
   end
 
   def show(conn, %{"id" => id}) do
-    person = People.get_person!(id)
+    user = Pow.Plug.current_user(conn)
+    person = People.get_person!(id, user)
     render(conn, :show, person: person)
   end
 
   def edit(conn, %{"id" => id}) do
-    person = People.get_person!(id)
+    user = Pow.Plug.current_user(conn)
+    person = People.get_person!(id, user)
     changeset = People.change_person(person)
     render(conn, :edit, person: person, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "person" => person_params}) do
-    person = People.get_person!(id)
+    user = Pow.Plug.current_user(conn)
+    person = People.get_person!(id, user)
 
     case People.update_person(person, person_params) do
       {:ok, person} ->
@@ -52,7 +59,8 @@ defmodule ElixirRotationWeb.PersonController do
   end
 
   def delete(conn, %{"id" => id}) do
-    person = People.get_person!(id)
+    user = Pow.Plug.current_user(conn)
+    person = People.get_person!(id, user)
     {:ok, _person} = People.delete_person(person)
 
     conn

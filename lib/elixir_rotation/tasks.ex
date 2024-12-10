@@ -13,12 +13,14 @@ defmodule ElixirRotation.Tasks do
 
   ## Examples
 
-      iex> list_tasks()
+      iex> list_tasks(1)
       [%Task{}, ...]
 
   """
-  def list_tasks do
-    Repo.all(Task)
+  def list_tasks(user) do
+    Task
+    |> where([t], t.user_id == ^user.id)
+    |> Repo.all()
   end
 
   @doc """
@@ -28,14 +30,14 @@ defmodule ElixirRotation.Tasks do
 
   ## Examples
 
-      iex> get_task!(123)
+      iex> get_task!(123, 1)
       %Task{}
 
-      iex> get_task!(456)
+      iex> get_task!(456, -1)
       ** (Ecto.NoResultsError)
 
   """
-  def get_task!(id), do: Repo.get!(Task, id)
+  def get_task!(id, user), do: Repo.get_by!(Task, id: id, user_id: user.id)
 
   @doc """
   Creates a task.

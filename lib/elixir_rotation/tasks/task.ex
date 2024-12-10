@@ -13,8 +13,8 @@ defmodule ElixirRotation.Tasks.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name, :description])
+    |> cast(attrs, [:name, :description, :user_id])
+    |> validate_required([:name, :description, :user_id])
     |> assoc_constraint(:user)
   end
 end

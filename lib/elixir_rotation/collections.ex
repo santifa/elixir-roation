@@ -4,6 +4,7 @@ defmodule ElixirRotation.Collections do
   """
 
   import Ecto.Query, warn: false
+  alias ElixirRotation.Accounts.User
   alias ElixirRotation.Repo
 
   alias ElixirRotation.Collections.Collection
@@ -13,12 +14,14 @@ defmodule ElixirRotation.Collections do
 
   ## Examples
 
-      iex> list_collections()
+      iex> list_collections(1)
       [%Collection{}, ...]
 
   """
-  def list_collections do
-    Repo.all(Collection)
+  def list_collections(user) do
+    Collection
+    |> where([t], t.user_id == ^user.id)
+    |> Repo.all()
   end
 
   @doc """
@@ -28,14 +31,14 @@ defmodule ElixirRotation.Collections do
 
   ## Examples
 
-      iex> get_collection!(123)
+      iex> get_collection!(123, 1)
       %Collection{}
 
-      iex> get_collection!(456)
+      iex> get_collection!(456, -1)
       ** (Ecto.NoResultsError)
 
   """
-  def get_collection!(id), do: Repo.get!(Collection, id)
+  def get_collection!(id, user), do: Repo.get_by!(Collection, id: id, user_id: user.id)
 
   @doc """
   Creates a collection.
