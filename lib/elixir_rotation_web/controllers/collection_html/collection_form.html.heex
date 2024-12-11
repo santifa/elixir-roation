@@ -10,14 +10,16 @@
   <.input field={{f, :people}}
           type="select"
           name="assigned_people[]"
-          value=""
+          multiple={true}
+          value={Enum.map(@current_people, fn t -> t.id end)}
           options={Enum.map(@available_people, fn p -> {p.name, p.id} end)} />
 
   <.input field={{f, :tasks}}
-        type="select"
-        name="assigned_tasks[]"
-        value=""
-        options={Enum.map(@available_tasks, fn t -> {t.name, t.id} end)} />
+          type="select"
+          name="assigned_tasks[]"
+          multiple={true}
+          value={Enum.map(@current_tasks, fn t -> t.id end)}
+          options={Enum.map(@available_tasks, fn t -> {t.name, t.id} end)} />
 
   <:actions>
     <.button>Save Collection</.button>

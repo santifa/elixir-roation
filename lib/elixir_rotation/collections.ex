@@ -4,6 +4,7 @@ defmodule ElixirRotation.Collections do
   """
 
   import Ecto.Query, warn: false
+  alias ElixirRotation.People
   alias ElixirRotation.Repo
 
   alias ElixirRotation.Tasks.Task
@@ -115,5 +116,15 @@ defmodule ElixirRotation.Collections do
   """
   def change_collection(%Collection{} = collection, attrs \\ %{}) do
     Collection.changeset(collection, attrs)
+  end
+
+  def get_people_on_collection(%Collection{} = collection) do
+    collection = Repo.get!(Collection, collection.id) |> Repo.preload(:people)
+    collection.people
+  end
+
+  def get_tasks_on_collection(%Collection{} = collection) do
+    collection = Repo.get!(Collection, collection.id) |> Repo.preload(:tasks)
+    collection.tasks
   end
 end

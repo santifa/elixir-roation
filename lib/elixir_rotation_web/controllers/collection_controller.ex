@@ -65,14 +65,17 @@ defmodule ElixirRotationWeb.CollectionController do
     changeset = Collections.change_collection(collection)
     # Get additional information
     available_people = People.list_people(user)
+    current_people = Collections.get_people_on_collection(collection)
     available_tasks = Tasks.list_tasks(user)
+    current_tasks = Collections.get_tasks_on_collection(collection)
+
 
     render(conn, :edit,
       collection: collection,
       changeset: changeset,
-      current_people: [],
+      current_people: current_people,
       available_people: available_people,
-      current_tasks: [],
+      current_tasks: current_tasks,
       available_tasks: available_tasks)
   end
 
