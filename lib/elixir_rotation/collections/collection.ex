@@ -23,8 +23,10 @@ defmodule ElixirRotation.Collections.Collection do
     collection
     |> cast(attrs, [:name, :description, :webhook, :match_interval, :user_id])
     |> validate_required([:name, :description, :webhook, :match_interval, :user_id])
+    |> validate_format(:webhook, ~r/^https?:\/\/[\w\-]+(\.[\w\-]+)+[#?\/\w\-]*$/)
     |> assoc_constraint(:user)
     # TODO: Fix as this should be working
-    #|> cast_assoc(:people, required: true)
+    |> cast_assoc(:people)
+    |> cast_assoc(:tasks)
   end
 end

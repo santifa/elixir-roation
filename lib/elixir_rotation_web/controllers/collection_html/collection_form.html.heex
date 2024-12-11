@@ -11,7 +11,7 @@
           type="select"
           name="assigned_people[]"
           multiple={true}
-          value={Enum.map(@current_people, fn t -> t.id end)}
+          value={Enum.map(@current_people, fn p -> p.id end)}
           options={Enum.map(@available_people, fn p -> {p.name, p.id} end)} />
 
   <.input field={{f, :tasks}}

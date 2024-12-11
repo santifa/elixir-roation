@@ -28,7 +28,7 @@ defmodule ElixirRotationWeb.CollectionController do
   end
 
   def create(conn, %{"collection" => collection_params,
-                    "assigned_people" => assigned_people,
+                     "assigned_people" => assigned_people,
                      "assigned_tasks" => assigned_tasks}) do
     user = Pow.Plug.current_user(conn)
     collection_params = Map.put(collection_params, "user_id", user.id)
@@ -46,11 +46,20 @@ defmodule ElixirRotationWeb.CollectionController do
 
         render(conn, :new,
           changeset: changeset,
-          current_people: assigned_people,
+          current_people: [],
           available_people: available_people,
-          current_tasks: assigned_people,
+          current_tasks: [],
           available_tasks: available_tasks)
     end
+  end
+
+  @doc """
+  Assign empty default values if the form doesn't return anything.
+  """
+  def create(conn, params) do
+    params = Map.put(params, "assigned_people", [])
+    params = Map.put(params, "assigned_tasks", [])
+    create(conn, params)
   end
 
   def show(conn, %{"id" => id}) do
@@ -68,7 +77,6 @@ defmodule ElixirRotationWeb.CollectionController do
     current_people = Collections.get_people_on_collection(collection)
     available_tasks = Tasks.list_tasks(user)
     current_tasks = Collections.get_tasks_on_collection(collection)
-
 
     render(conn, :edit,
       collection: collection,
@@ -96,14 +104,16 @@ defmodule ElixirRotationWeb.CollectionController do
       {:error, %Ecto.Changeset{} = changeset} ->
         # Get additional information
         available_people = People.list_people(user)
+        current_people = Collections.get_people_on_collection(collection)
         available_tasks = Tasks.list_tasks(user)
+        current_tasks = Collections.get_tasks_on_collection(collection)
 
         render(conn, :edit,
           collection: collection,
           changeset: changeset,
-          current_people: assigned_people,
+          current_people: current_people,
           available_people: available_people,
-          current_tasks: assigned_people,
+          current_tasks: current_tasks,
           available_tasks: available_tasks)
     end
   end
