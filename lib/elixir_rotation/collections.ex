@@ -4,9 +4,10 @@ defmodule ElixirRotation.Collections do
   """
 
   import Ecto.Query, warn: false
-  alias ElixirRotation.Accounts.User
   alias ElixirRotation.Repo
 
+  alias ElixirRotation.Tasks.Task
+  alias ElixirRotation.People.Person
   alias ElixirRotation.Collections.Collection
 
   @doc """
@@ -52,9 +53,14 @@ defmodule ElixirRotation.Collections do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_collection(attrs \\ %{}) do
+  def create_collection(attrs \\ %{}, assigned_people, assigned_tasks) do
+    people = Repo.all(from p in Person, where: p.id in ^assigned_people)
+    tasks = Repo.all(from t in Task, where: t.id in ^assigned_tasks)
+
     %Collection{}
     |> Collection.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:people, people)
+    |> Ecto.Changeset.put_assoc(:tasks, tasks)
     |> Repo.insert()
   end
 
@@ -70,9 +76,15 @@ defmodule ElixirRotation.Collections do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_collection(%Collection{} = collection, attrs) do
+  def update_collection(%Collection{} = collection, attrs, assigned_people, assigned_tasks) do
+    people = Repo.all(from p in Person, where: p.id in ^assigned_people)
+    tasks = Repo.all(from t in Task, where: t.id in ^assigned_tasks)
+
     collection
+    |> Repo.preload([:people, :tasks])
     |> Collection.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:people, people)
+    |> Ecto.Changeset.put_assoc(:tasks, tasks)
     |> Repo.update()
   end
 

@@ -7,6 +7,7 @@ defmodule ElixirRotation.Accounts.User do
 
     has_many :tasks, ElixirRotation.Tasks.Task
     has_many :people, ElixirRotation.People.Person
+    has_many :collections, ElixirRotation.Collections.Collection
 
     timestamps()
   end

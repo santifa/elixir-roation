@@ -6,6 +6,19 @@
   <.input field={f[:description]} type="text" label="Description" />
   <.input field={f[:webhook]} type="text" label="Webhook" />
   <.input field={f[:match_interval]} type="text" label="Match interval" />
+
+  <.input field={{f, :people}}
+          type="select"
+          name="assigned_people[]"
+          value=""
+          options={Enum.map(@available_people, fn p -> {p.name, p.id} end)} />
+
+  <.input field={{f, :tasks}}
+        type="select"
+        name="assigned_tasks[]"
+        value=""
+        options={Enum.map(@available_tasks, fn t -> {t.name, t.id} end)} />
+
   <:actions>
     <.button>Save Collection</.button>
   </:actions>
