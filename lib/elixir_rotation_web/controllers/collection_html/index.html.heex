@@ -11,7 +11,7 @@
   <:col :let={collection} label="Name"><%= collection.name %></:col>
   <:col :let={collection} label="Description"><%= collection.description %></:col>
   <:col :let={collection} label="Webhook"><%= collection.webhook %></:col>
-  <:col :let={collection} label="Match interval"><%= collection.match_interval %></:col>
+  <:col :let={collection} label="Schedule"><%= collection.schedule %></:col>
   <:action :let={collection}>
     <div class="sr-only">
       <.link navigate={~p"/collections/#{collection}"}>Show</.link>

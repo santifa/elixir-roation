@@ -6,7 +6,8 @@ defmodule ElixirRotation.Collections.Collection do
     field :name, :string
     field :description, :string
     field :webhook, :string
-    field :match_interval, :string
+    field :schedule, :string
+
     belongs_to :user, ElixirRotation.Accounts.User
     many_to_many :people, ElixirRotation.People.Person,
       join_through: "collections_people",
@@ -21,11 +22,10 @@ defmodule ElixirRotation.Collections.Collection do
   @doc false
   def changeset(collection, attrs) do
     collection
-    |> cast(attrs, [:name, :description, :webhook, :match_interval, :user_id])
-    |> validate_required([:name, :description, :webhook, :match_interval, :user_id])
+    |> cast(attrs, [:name, :description, :webhook, :schedule, :user_id])
+    |> validate_required([:name, :webhook, :schedule, :user_id])
     |> validate_format(:webhook, ~r/^https?:\/\/[\w\-]+(\.[\w\-]+)+[#?\/\w\-]*$/)
     |> assoc_constraint(:user)
-    # TODO: Fix as this should be working
     |> cast_assoc(:people)
     |> cast_assoc(:tasks)
   end

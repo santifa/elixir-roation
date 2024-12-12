@@ -3,9 +3,9 @@ defmodule ElixirRotationWeb.CollectionControllerTest do
 
   import ElixirRotation.CollectionsFixtures
 
-  @create_attrs %{name: "some name", description: "some description", webhook: "some webhook", match_interval: "some match_interval"}
-  @update_attrs %{name: "some updated name", description: "some updated description", webhook: "some updated webhook", match_interval: "some updated match_interval"}
-  @invalid_attrs %{name: nil, description: nil, webhook: nil, match_interval: nil}
+  @create_attrs %{name: "some name", description: "some description", webhook: "some webhook", schedule: "some schedule"}
+  @update_attrs %{name: "some updated name", description: "some updated description", webhook: "some updated webhook", schedule: "some updated schedule"}
+  @invalid_attrs %{name: nil, description: nil, webhook: nil, schedule: nil}
 
   describe "index" do
     test "lists all collections", %{conn: conn} do

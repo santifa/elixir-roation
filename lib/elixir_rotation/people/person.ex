@@ -14,7 +14,7 @@ defmodule ElixirRotation.People.Person do
   def changeset(person, attrs) do
     person
     |> cast(attrs, [:name, :description, :user_id])
-    |> validate_required([:name, :description, :user_id])
+    |> validate_required([:name, :user_id])
     |> assoc_constraint(:user)
   end
 end

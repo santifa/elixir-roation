@@ -6,7 +6,7 @@ defmodule ElixirRotation.Repo.Migrations.CreateCollections do
       add :name, :string
       add :description, :text
       add :webhook, :string
-      add :match_interval, :string
+      add :schedule, :string
       add :user_id, references(:users, on_delete: :nothing)
 
       timestamps(type: :utc_datetime)

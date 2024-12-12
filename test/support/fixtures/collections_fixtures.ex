@@ -12,7 +12,7 @@ defmodule ElixirRotation.CollectionsFixtures do
       attrs
       |> Enum.into(%{
         description: "some description",
-        match_interval: "some match_interval",
+        schedule: "some schedule",
         name: "some name",
         webhook: "some webhook"
       })

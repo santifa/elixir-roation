@@ -8,7 +8,7 @@ defmodule ElixirRotation.CollectionsTest do
 
     import ElixirRotation.CollectionsFixtures
 
-    @invalid_attrs %{name: nil, description: nil, webhook: nil, match_interval: nil}
+    @invalid_attrs %{name: nil, description: nil, webhook: nil, schedule: nil}
 
     test "list_collections/0 returns all collections" do
       collection = collection_fixture()
@@ -21,13 +21,13 @@ defmodule ElixirRotation.CollectionsTest do
     end
 
     test "create_collection/1 with valid data creates a collection" do
-      valid_attrs = %{name: "some name", description: "some description", webhook: "some webhook", match_interval: "some match_interval"}
+      valid_attrs = %{name: "some name", description: "some description", webhook: "some webhook", schedule: "some schedule"}
 
       assert {:ok, %Collection{} = collection} = Collections.create_collection(valid_attrs)
       assert collection.name == "some name"
       assert collection.description == "some description"
       assert collection.webhook == "some webhook"
-      assert collection.match_interval == "some match_interval"
+      assert collection.schedule == "some schedule"
     end
 
     test "create_collection/1 with invalid data returns error changeset" do
@@ -36,13 +36,13 @@ defmodule ElixirRotation.CollectionsTest do
 
     test "update_collection/2 with valid data updates the collection" do
       collection = collection_fixture()
-      update_attrs = %{name: "some updated name", description: "some updated description", webhook: "some updated webhook", match_interval: "some updated match_interval"}
+      update_attrs = %{name: "some updated name", description: "some updated description", webhook: "some updated webhook", schedule: "some updated schedule"}
 
       assert {:ok, %Collection{} = collection} = Collections.update_collection(collection, update_attrs)
       assert collection.name == "some updated name"
       assert collection.description == "some updated description"
       assert collection.webhook == "some updated webhook"
-      assert collection.match_interval == "some updated match_interval"
+      assert collection.schedule == "some updated schedule"
     end
 
     test "update_collection/2 with invalid data returns error changeset" do
