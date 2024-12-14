@@ -546,6 +546,7 @@ defmodule ElixirRotationWeb.CoreComponents do
     """
   end
 
+
   @doc """
   Renders a back navigation link.
 

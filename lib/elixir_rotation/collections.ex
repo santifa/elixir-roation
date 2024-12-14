@@ -27,6 +27,23 @@ defmodule ElixirRotation.Collections do
   end
 
   @doc """
+  Returns the list of collections with preloaded tasks and people.
+
+  ## Examples
+
+      iex> list_collections(1)
+      [%Collection{}, ...]
+
+  """
+  def list_preloaded_collections(user) do
+    Collection
+    |> where([t], t.user_id == ^user.id)
+    |> Repo.all()
+    |> Repo.preload([:people, :tasks])
+  end
+
+
+  @doc """
   Gets a single collection.
 
   Raises `Ecto.NoResultsError` if the Collection does not exist.
@@ -41,6 +58,26 @@ defmodule ElixirRotation.Collections do
 
   """
   def get_collection!(id, user), do: Repo.get_by!(Collection, id: id, user_id: user.id)
+
+  @doc """
+  Gets a single collection.
+
+  Raises `Ecto.NoResultsError` if the Collection does not exist.
+
+  ## Examples
+
+      iex> get_collection!(123, 1)
+      %Collection{}
+
+      iex> get_collection!(456, -1)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_collection_preloaded!(id, user) do
+    Repo.get_by!(Collection, id: id, user_id: user.id)
+    |> Repo.preload([:tasks, :people])
+  end
+
 
   @doc """
   Creates a collection.

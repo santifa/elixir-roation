@@ -1,5 +1,6 @@
 defmodule ElixirRotationWeb.PersonHTML do
   use ElixirRotationWeb, :html
+  import ElixirRotationWeb.BaseComponents
 
   embed_templates "person_html/*"
 

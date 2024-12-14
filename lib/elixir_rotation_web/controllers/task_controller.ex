@@ -7,6 +7,11 @@ defmodule ElixirRotationWeb.TaskController do
   def index(conn, _params) do
     user = Pow.Plug.current_user(conn)
     tasks = Tasks.list_tasks(user)
+    tasks = Enum.map(tasks, fn p ->
+      ids = Tasks.get_collection_ids(p.id)
+      Map.put(p, :collections, ids)
+    end)
+
     render(conn, :index, tasks: tasks)
   end
 
@@ -33,6 +38,8 @@ defmodule ElixirRotationWeb.TaskController do
   def show(conn, %{"id" => id}) do
     user = Pow.Plug.current_user(conn)
     task = Tasks.get_task!(id, user)
+    task = Map.put(task, :collections, Tasks.get_collection_ids(task.id))
+
     render(conn, :show, task: task)
   end
 

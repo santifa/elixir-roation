@@ -1,5 +1,6 @@
 defmodule ElixirRotationWeb.TaskHTML do
   use ElixirRotationWeb, :html
+  import ElixirRotationWeb.BaseComponents
 
   embed_templates "task_html/*"
 

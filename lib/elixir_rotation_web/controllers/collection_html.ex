@@ -1,5 +1,6 @@
 defmodule ElixirRotationWeb.CollectionHTML do
   use ElixirRotationWeb, :html
+  import ElixirRotationWeb.BaseComponents
 
   embed_templates "collection_html/*"
 

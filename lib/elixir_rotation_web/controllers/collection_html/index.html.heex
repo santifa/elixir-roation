@@ -12,6 +12,8 @@
   <:col :let={collection} label="Description"><%= collection.description %></:col>
   <:col :let={collection} label="Webhook"><%= collection.webhook %></:col>
   <:col :let={collection} label="Schedule"><%= collection.schedule %></:col>
+  <:col :let={collection} label="Tasks"><%= length(collection.tasks) %></:col>
+  <:col :let={collection} label="People"><%= length(collection.people) %></:col>
   <:action :let={collection}>
     <div class="sr-only">
       <.link navigate={~p"/collections/#{collection}"}>Show</.link>

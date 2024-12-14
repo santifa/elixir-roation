@@ -4,6 +4,7 @@ defmodule ElixirRotation.Tasks do
   """
 
   import Ecto.Query, warn: false
+  alias ElixirRotation.Collections.Collection
   alias ElixirRotation.Repo
 
   alias ElixirRotation.Tasks.Task
@@ -102,5 +103,15 @@ defmodule ElixirRotation.Tasks do
   """
   def change_task(%Task{} = task, attrs \\ %{}) do
     Task.changeset(task, attrs)
+  end
+
+  def get_collection_ids(task_id) do
+    query =
+      from colls in "collections_tasks",
+      where: [task_id: ^task_id],
+      select: colls.collection_id
+    ids = Repo.all(query)
+
+    Enum.map(ids, fn id -> Repo.get!(Collection, id) end)
   end
 end

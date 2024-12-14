@@ -4,6 +4,7 @@ defmodule ElixirRotation.People do
   """
 
   import Ecto.Query, warn: false
+  alias ElixirRotation.Collections.Collection
   alias ElixirRotation.Repo
 
   alias ElixirRotation.People.Person
@@ -22,6 +23,7 @@ defmodule ElixirRotation.People do
     |> where([t], t.user_id == ^user.id)
     |> Repo.all()
   end
+
 
   @doc """
   Gets a single person.
@@ -102,5 +104,15 @@ defmodule ElixirRotation.People do
   """
   def change_person(%Person{} = person, attrs \\ %{}) do
     Person.changeset(person, attrs)
+  end
+
+  def get_collection_ids(person_id) do
+    query =
+      from colls in "collections_people",
+      where: [person_id: ^person_id],
+      select: colls.collection_id
+    ids = Repo.all(query)
+
+    Enum.map(ids, fn id -> Repo.get!(Collection, id) end)
   end
 end

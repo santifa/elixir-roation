@@ -13,4 +13,6 @@
   <:item title="Description"><%= @task.description %></:item>
 </.list>
 
+<.list_head name="Used by Collections" items={@task.collections} />
+
 <.back navigate={~p"/tasks"}>Back to tasks</.back>

@@ -8,7 +8,7 @@ defmodule ElixirRotationWeb.CollectionController do
 
   def index(conn, _params) do
     user = Pow.Plug.current_user(conn)
-    collections = Collections.list_collections(user)
+    collections = Collections.list_preloaded_collections(user)
 
     render(conn, :index,
       collections: collections)
@@ -66,7 +66,7 @@ defmodule ElixirRotationWeb.CollectionController do
 
   def show(conn, %{"id" => id}) do
     user = Pow.Plug.current_user(conn)
-    collection = Collections.get_collection!(id, user)
+    collection = Collections.get_collection_preloaded!(id, user)
     render(conn, :show, collection: collection)
   end
 

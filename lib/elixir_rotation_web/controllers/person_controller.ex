@@ -1,12 +1,18 @@
 defmodule ElixirRotationWeb.PersonController do
   use ElixirRotationWeb, :controller
 
+  alias ElixirRotation.Collections
   alias ElixirRotation.People
   alias ElixirRotation.People.Person
 
   def index(conn, _params) do
     user = Pow.Plug.current_user(conn)
     people = People.list_people(user)
+    people = Enum.map(people, fn p ->
+      ids = People.get_collection_ids(p.id)
+      Map.put(p, :collections, ids)
+    end)
+
     render(conn, :index, people: people)
   end
 
@@ -33,6 +39,8 @@ defmodule ElixirRotationWeb.PersonController do
   def show(conn, %{"id" => id}) do
     user = Pow.Plug.current_user(conn)
     person = People.get_person!(id, user)
+    person = Map.put(person, :collections, People.get_collection_ids(person.id))
+
     render(conn, :show, person: person)
   end
 
