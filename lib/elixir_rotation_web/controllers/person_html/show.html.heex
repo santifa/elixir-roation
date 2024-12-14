@@ -13,6 +13,6 @@
   <:item title="Description"><%= @person.description %></:item>
 </.list>
 
-<.list_head name="Used by Collections" items={@person.collections} />
+<.list_head name="Used by Collections" items={@person.collections} nav="collections" />
 
 <.back navigate={~p"/people"}>Back to people</.back>

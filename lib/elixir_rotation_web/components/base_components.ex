@@ -13,6 +13,7 @@ defmodule ElixirRotationWeb.BaseComponents do
 
   attr :items, :map, required: true
   attr :name, :string, required: true
+  attr :nav, :string, required: true
 
   def list_head(assigns) do
     ~H"""
@@ -20,7 +21,7 @@ defmodule ElixirRotationWeb.BaseComponents do
     <ul class="mt-4 max-w-md space-y-1 list-inside">
       <li :for={item <- @items}>
         <a
-          href={~p"/collections/#{item}"}
+          href={~p"/#{@nav}/#{item}"}
           class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
         >
           {item.name}

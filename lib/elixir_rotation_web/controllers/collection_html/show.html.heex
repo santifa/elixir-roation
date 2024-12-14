@@ -15,8 +15,8 @@
   <:item title="Schedule"><%= @collection.schedule %></:item>
 </.list>
 
-<.list_head name="Used tasks" items={@collection.tasks} />
+<.list_head name="Used tasks" items={@collection.tasks} nav="tasks" />
 
-<.list_head name="Used people" items={@collection.people} />
+<.list_head name="Used people" items={@collection.people} nav="people" />
 
 <.back navigate={~p"/collections"}>Back to collections</.back>
