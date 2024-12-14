@@ -1,4 +1,5 @@
 defmodule ElixirRotationWeb.Router do
+  alias ElixirRotationWeb.Plugs.Dashboard
   use ElixirRotationWeb, :router
   use Pow.Phoenix.Router
 
@@ -6,6 +7,7 @@ defmodule ElixirRotationWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
+    plug Dashboard
     plug :put_root_layout, html: {ElixirRotationWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
