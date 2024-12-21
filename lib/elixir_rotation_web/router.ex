@@ -32,6 +32,8 @@ defmodule ElixirRotationWeb.Router do
     pipe_through [:browser]
 
     get "/", PageController, :home
+    get "/about", PageController, :about
+    get "/contact", PageController, :contact
   end
 
   scope "/", ElixirRotationWeb do

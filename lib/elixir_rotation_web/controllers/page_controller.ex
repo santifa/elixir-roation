@@ -10,6 +10,13 @@ defmodule ElixirRotationWeb.PageController do
       true -> render(conn, :home)
       false -> redirect(conn, to: ~p"/dashboard")
     end
+  end
 
+  def about(conn, _params) do
+    render(conn, :about)
+  end
+
+  def contact(conn, _params) do
+    render(conn, :contact)
   end
 end
