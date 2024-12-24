@@ -1,22 +1,30 @@
 <.header>
-  Collection <%= @collection.id %>
-  <:subtitle>This is a collection record from your database.</:subtitle>
+  Collection {@collection.id}
+  <:subtitle>This is a collection record for matching tasks and people.</:subtitle>
   <:actions>
     <.link href={~p"/collections/#{@collection}/edit"}>
       <.button>Edit collection</.button>
     </.link>
+    <.link href={~p"/"}>
+      <.button>Run Matching</.button>
+    </.link>
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Name"><%= @collection.name %></:item>
-  <:item title="Description"><%= @collection.description %></:item>
-  <:item title="Webhook"><%= @collection.webhook %></:item>
-  <:item title="Schedule"><%= @collection.schedule %></:item>
-</.list>
+<div class="space-y-10">
+  <.subhead name="General Information" />
+  <.list>
+    <:item title="Name">{@collection.name}</:item>
+    <:item title="Description">{@collection.description}</:item>
+    <:item title="Webhook">{@collection.webhook}</:item>
+    <:item title="Schedule">{@collection.schedule}</:item>
+  </.list>
 
-<.list_head name="Used tasks" items={@collection.tasks} nav="tasks" />
+  <.subhead name="Collection Items" />
+  <.card title="Tasks" icon="hero-pencil-square-solid" nav="tasks" items={@collection.tasks} />
+  <.card title="People" icon="hero-user-solid" nav="people" items={@collection.people} />
+</div>
 
-<.list_head name="Used people" items={@collection.people} nav="people" />
+<.subhead name="Result" />
 
 <.back navigate={~p"/collections"}>Back to collections</.back>

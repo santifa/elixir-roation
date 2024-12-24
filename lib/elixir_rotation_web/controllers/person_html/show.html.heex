@@ -1,5 +1,5 @@
 <.header>
-  Person <%= @person.id %>
+  Person {@person.id}
   <:subtitle>This is a person record from your database.</:subtitle>
   <:actions>
     <.link href={~p"/people/#{@person}/edit"}>
@@ -8,11 +8,13 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Name"><%= @person.name %></:item>
-  <:item title="Description"><%= @person.description %></:item>
-</.list>
+<div class="space-y-10">
+  <.list>
+    <:item title="Name">{@person.name}</:item>
+    <:item title="Description">{@person.description}</:item>
+  </.list>
 
-<.list_head name="Used by Collections" items={@person.collections} nav="collections" />
+  <.card title="Collections" nav="collections" items={@person.collections} />
+</div>
 
 <.back navigate={~p"/people"}>Back to people</.back>

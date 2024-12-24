@@ -8,11 +8,13 @@
   </:actions>
 </.header>
 
+<div class="space-y-10">
 <.list>
   <:item title="Name"><%= @task.name %></:item>
   <:item title="Description"><%= @task.description %></:item>
 </.list>
 
-<.list_head name="Used by Collections" items={@task.collections} nav="collections" />
+  <.card title="Collections" nav="collections" items={@task.collections} />
+</div>
 
 <.back navigate={~p"/tasks"}>Back to tasks</.back>
