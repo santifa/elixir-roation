@@ -5,7 +5,7 @@
     <.link href={~p"/collections/#{@collection}/edit"}>
       <.button>Edit collection</.button>
     </.link>
-    <.link href={~p"/"}>
+    <.link href={~p"/collections/#{@collection}/run"} method="post">
       <.button>Run Matching</.button>
     </.link>
   </:actions>
@@ -21,8 +21,45 @@
   </.list>
 
   <.subhead name="Collection Items" />
-  <.card title="Tasks" icon="hero-pencil-square-solid" nav="tasks" items={@collection.tasks} />
-  <.card title="People" icon="hero-user-solid" nav="people" items={@collection.people} />
+  <.card title="Tasks" icon="hero-pencil-square-solid" nav="tasks" items={@collection.tasks}>
+    <:link>
+      <.link href={~p"/"} class="ml-1">
+        <.button>Show</.button>
+      </.link>
+    </:link>
+
+    <:link>
+      <.link href={~p"/"} class="ml-1">
+        <.button>Edit</.button>
+      </.link>
+    </:link>
+
+    <:link>
+      <.link href={~p"/"} class="ml-1">
+        <.button>Delete</.button>
+      </.link>
+    </:link>
+  </.card>
+
+  <.card title="People" icon="hero-user-solid" nav="people" items={@collection.people}>
+    <:link>
+      <.link href={~p"/"} class="ml-1">
+        <.button>Show</.button>
+      </.link>
+    </:link>
+
+    <:link>
+      <.link href={~p"/"} class="ml-1">
+        <.button>Edit</.button>
+      </.link>
+    </:link>
+
+    <:link>
+      <.link href={~p"/"} class="ml-1">
+        <.button>Delete</.button>
+      </.link>
+    </:link>
+  </.card>
 </div>
 
 <.subhead name="Result" />

@@ -20,7 +20,9 @@ defmodule ElixirRotation.Application do
       # Start a worker by calling: ElixirRotation.Worker.start_link(arg)
       # {ElixirRotation.Worker, arg},
       # Start to serve requests, typically the last entry
-      ElixirRotationWeb.Endpoint
+      ElixirRotationWeb.Endpoint,
+      # The quantum scheduler
+      ElixirRotation.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

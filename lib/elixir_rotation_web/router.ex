@@ -44,7 +44,9 @@ defmodule ElixirRotationWeb.Router do
     # Resource bundles
     resources "/tasks", TaskController
     resources "/people", PersonController
-    resources "/collections", CollectionController
+    resources "/collections", CollectionController do
+      post "/run", CollectionController, :run
+    end
   end
 
 

@@ -15,6 +15,7 @@ defmodule ElixirRotation.Collections.Collection do
     many_to_many :tasks, ElixirRotation.Tasks.Task,
       join_through: "collections_tasks",
       on_replace: :delete
+    has_many :matches, ElixirRotation.Matches.Match
 
     timestamps(type: :utc_datetime)
   end

@@ -1,6 +1,8 @@
 defmodule ElixirRotationWeb.CollectionController do
   use ElixirRotationWeb, :controller
 
+  alias ElixirRotation.Matches
+  alias ElixirRotation.TaskMatcher
   alias ElixirRotation.Tasks
   alias ElixirRotation.People
   alias ElixirRotation.Collections
@@ -128,5 +130,24 @@ defmodule ElixirRotationWeb.CollectionController do
     conn
     |> put_flash(:info, "Collection deleted successfully.")
     |> redirect(to: ~p"/collections")
+  end
+
+  def run(conn, %{"collection_id" => id}) do
+    user = Pow.Plug.current_user(conn)
+    collection = Collections.get_collection!(id, user)
+   %{:task => task, :person => person} = TaskMatcher.match_tasks(collection, :random_one)
+    match = %{user_id: user.id, collection_id: id, random_type: "random_one"}
+
+   case Matches.create_match(match, [task], [person]) do
+     {:ok, match} ->
+       conn
+       |> put_flash(:info, "Match #{match.id} created for #{collection.name}")
+       |> redirect(to: ~p"/collections/#{id}")
+   {:error, %Ecto.Changeset{} = changeset} ->
+       IO.inspect(changeset)
+       conn
+       |> put_flash(:error, "Creating match failed")
+       |> redirect(to: ~p"/collections/#{id}")
+   end
   end
 end
