@@ -52,21 +52,6 @@ defmodule ElixirRotationWeb.TaskController do
     end
   end
 
-  # def show(conn, %{"id" => id}) do
-  #   user = Pow.Plug.current_user(conn)
-  #   task = Tasks.get_task!(id, user)
-  #   task = Map.put(task, :collections, Tasks.get_collection_ids(task.id))
-
-  #   render(conn, :show, task: task)
-  # end
-
-  # def edit(conn, %{"id" => id}) do
-  #   user = Pow.Plug.current_user(conn)
-  #   task = Tasks.get_task!(id, user)
-  #   changeset = Tasks.change_task(task)
-  #   render(conn, :edit, task: task, changeset: changeset)
-  # end
-
   def update(conn, %{"id" => id, "task" => task_params}) do
     user = Pow.Plug.current_user(conn)
     task = Tasks.get_task!(id, user)

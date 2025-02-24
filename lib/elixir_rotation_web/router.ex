@@ -42,8 +42,8 @@ defmodule ElixirRotationWeb.Router do
     get "/dashboard", DashboardController, :index
 
     # Resource bundles
-    resources "/tasks", TaskController
-    resources "/people", PersonController
+    resources "/tasks", TaskController, only: [:index, :create, :update, :delete]
+    resources "/people", PersonController, only: [:index, :create, :update, :delete]
     resources "/collections", CollectionController do
       post "/run", CollectionController, :run
     end
