@@ -1,27 +1,37 @@
 <.header>
   Listing Tasks
-  <:actions>
-    <.link href={~p"/tasks/new"}>
-      <.button>New Task</.button>
-    </.link>
-  </:actions>
 </.header>
 
-<.table id="tasks" rows={@tasks} row_click={&JS.navigate(~p"/tasks/#{&1}")}>
-  <:col :let={task} label="Name"><%= task.name %></:col>
-  <:col :let={task} label="Description"><%= task.description %></:col>
-  <:col :let={task} label="Used by Collections"><%= length(task.collections) %></:col>
+<.table id="tasks" rows={@tasks}>
+  <:col :let={task} label="Name">{task.name}</:col>
+  <:col :let={task} label="Description">{task.description}</:col>
+  <:col :let={task} label="Used by Collections">{length(task.collections)}</:col>
+
   <:action :let={task}>
-    <div class="sr-only">
-      <.link navigate={~p"/tasks/#{task}"}>Show</.link>
+    <div class="flex flex-row gap-4">
+      <.modal_edit title={"Edit #{task.name}"} id={task.id} icon="hero-pencil-solid">
+        <.task_form
+          changeset={task.changeset}
+          collections={task.collections}
+          action={~p"/tasks/#{task}"}
+          button_text="Update task"
+        />
+      </.modal_edit>
+
+      <.delete_modal href={~p"/tasks/#{task}"} title={task.name} id={task.id} />
     </div>
-    <.link navigate={~p"/tasks/#{task}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={task}>
-    <.link href={~p"/tasks/#{task}"} method="delete" data-confirm="Are you sure?">
-      Delete
-    </.link>
   </:action>
 </.table>
+
+<hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
+
+<.modal_edit title="Create new task" id="new" icon="hero-plus-solid">
+  <.task_form
+    changeset={@changeset}
+    collections={[]}
+    action={~p"/tasks"}
+    button_text="Create task"
+  />
+</.modal_edit>
 
 <.back navigate={~p"/dashboard"}>Back to Dashboard</.back>

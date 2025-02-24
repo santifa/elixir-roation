@@ -1,30 +1,50 @@
 <.header>
   Listing Collections
-  <:actions>
-    <.link href={~p"/collections/new"}>
-      <.button>New Collection</.button>
-    </.link>
-  </:actions>
 </.header>
 
 <.table id="collections" rows={@collections} row_click={&JS.navigate(~p"/collections/#{&1}")}>
-  <:col :let={collection} label="Name"><%= collection.name %></:col>
-  <:col :let={collection} label="Description"><%= collection.description %></:col>
-  <:col :let={collection} label="Webhook"><%= collection.webhook %></:col>
-  <:col :let={collection} label="Schedule"><%= collection.schedule %></:col>
-  <:col :let={collection} label="Tasks"><%= length(collection.tasks) %></:col>
-  <:col :let={collection} label="People"><%= length(collection.people) %></:col>
+  <:col :let={collection} label="Name">{collection.name}</:col>
+  <:col :let={collection} label="Description">{collection.description}</:col>
+  <:col :let={collection} label="Webhook">{collection.webhook}</:col>
+  <:col :let={collection} label="Schedule">{collection.schedule}</:col>
+  <:col :let={collection} label="Tasks">{length(collection.tasks)}</:col>
+  <:col :let={collection} label="People">{length(collection.people)}</:col>
+
   <:action :let={collection}>
-    <div class="sr-only">
-      <.link navigate={~p"/collections/#{collection}"}>Show</.link>
+    <div class="flex flex-row gap-4">
+      <.modal_edit title={"Edit #{collection.name}"} id={collection.id} icon="hero-pencil-solid">
+        <.collection_form
+          changeset={collection.changeset}
+          action={~p"/collections/#{collection}"}
+          available_tasks={@available_tasks}
+          available_people={@available_people}
+          current_people={collection.people}
+          current_tasks={collection.tasks}
+          button_text="Update collection"
+        />
+      </.modal_edit>
+
+      <.delete_modal
+        href={~p"/collections/#{collection}"}
+        title={collection.name}
+        id={collection.id}
+      />
     </div>
-    <.link navigate={~p"/collections/#{collection}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={collection}>
-    <.link href={~p"/collections/#{collection}"} method="delete" data-confirm="Are you sure?">
-      Delete
-    </.link>
   </:action>
 </.table>
+
+<hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
+
+<.modal_edit title="Create new task" id="new" icon="hero-plus-solid">
+  <.collection_form
+    changeset={@changeset}
+    action={~p"/collections"}
+    available_tasks={@available_tasks}
+    available_people={@available_people}
+    current_people={[]}
+    current_tasks={[]}
+    button_text="Create collection"
+  />
+</.modal_edit>
 
 <.back navigate={~p"/dashboard"}>Back to Dashboard</.back>

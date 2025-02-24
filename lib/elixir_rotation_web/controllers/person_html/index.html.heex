@@ -1,27 +1,32 @@
 <.header>
   Listing People
-  <:actions>
-    <.link href={~p"/people/new"}>
-      <.button>New Person</.button>
-    </.link>
-  </:actions>
 </.header>
 
-<.table id="people" rows={@people} row_click={&JS.navigate(~p"/people/#{&1}")}>
-  <:col :let={person} label="Name"><%= person.name %></:col>
-  <:col :let={person} label="Description"><%= person.description %></:col>
-  <:col :let={person} label="Used by Collections"><%= length(person.collections) %></:col>
+<.table id="people" rows={@people}>
+  <:col :let={person} label="Name">{person.name}</:col>
+  <:col :let={person} label="Description">{person.description}</:col>
+  <:col :let={person} label="Used by Collections">{length(person.collections)}</:col>
+
   <:action :let={person}>
-    <div class="sr-only">
-      <.link navigate={~p"/people/#{person}"}>Show</.link>
+    <div class="flex flex-row gap-4">
+      <!-- <%= inspect {person} %> -->
+      <.modal_edit title={"Edit #{person.name}"} id={person.id} icon="hero-pencil-solid">
+        <.person_form
+          changeset={person.changeset}
+          action={~p"/people/#{person}"}
+          button_text="Update person"
+        />
+      </.modal_edit>
+
+      <.delete_modal href={~p"/people/#{person}"} title={person.name} id={person.id} />
     </div>
-    <.link navigate={~p"/people/#{person}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={person}>
-    <.link href={~p"/people/#{person}"} method="delete" data-confirm="Are you sure?">
-      Delete
-    </.link>
   </:action>
 </.table>
+
+<hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
+
+<.modal_edit title="Create new person" id="new" icon="hero-plus-solid">
+  <.person_form changeset={@changeset} action={~p"/people"} button_text="Create person" />
+</.modal_edit>
 
 <.back navigate={~p"/dashboard"}>Back to Dashboard</.back>

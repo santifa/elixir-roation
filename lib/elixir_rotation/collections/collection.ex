@@ -24,7 +24,7 @@ defmodule ElixirRotation.Collections.Collection do
   def changeset(collection, attrs) do
     collection
     |> cast(attrs, [:name, :description, :webhook, :schedule, :user_id])
-    |> validate_required([:name, :webhook, :schedule, :user_id])
+    |> validate_required([:name, :user_id])
     |> validate_format(:webhook, ~r/^https?:\/\/[\w\-]+(\.[\w\-]+)+[#?\/\w\-]*$/)
     |> assoc_constraint(:user)
     |> cast_assoc(:people)

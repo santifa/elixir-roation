@@ -90,7 +90,8 @@ defmodule ElixirRotation.People do
 
   """
   def delete_person(%Person{} = person) do
-    Repo.delete(person)
+    person
+    |> Repo.delete
   end
 
   @doc """

@@ -5,7 +5,7 @@ defmodule ElixirRotation.Repo.Migrations.CreateTasks do
     create table(:tasks) do
       add :name, :string
       add :description, :text
-      add :user_id, references(:users, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end

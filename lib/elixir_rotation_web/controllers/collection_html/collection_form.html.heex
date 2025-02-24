@@ -7,21 +7,27 @@
   <.input field={f[:webhook]} type="text" label="Webhook" />
   <.input field={f[:schedule]} type="text" label="Schedule" />
 
-  <.input field={{f, :people}}
-          type="select"
-          name="assigned_people[]"
-          multiple={true}
-          value={Enum.map(@current_people, fn p -> p.id end)}
-          options={Enum.map(@available_people, fn p -> {p.name, p.id} end)} />
+  <.input
+    field={{f, :people}}
+    label="People"
+    type="select"
+    name="assigned_people[]"
+    multiple={true}
+    value={Enum.map(@current_people, fn p -> p.id end)}
+    options={Enum.map(@available_people, fn p -> {p.name, p.id} end)}
+  />
 
-  <.input field={{f, :tasks}}
-          type="select"
-          name="assigned_tasks[]"
-          multiple={true}
-          value={Enum.map(@current_tasks, fn t -> t.id end)}
-          options={Enum.map(@available_tasks, fn t -> {t.name, t.id} end)} />
+  <.input
+    field={{f, :tasks}}
+    label="Tasks"
+    type="select"
+    name="assigned_tasks[]"
+    multiple={true}
+    value={Enum.map(@current_tasks, fn t -> t.id end)}
+    options={Enum.map(@available_tasks, fn t -> {t.name, t.id} end)}
+  />
 
   <:actions>
-    <.button>Save Collection</.button>
+    <.button>{@button_text}</.button>
   </:actions>
 </.simple_form>
