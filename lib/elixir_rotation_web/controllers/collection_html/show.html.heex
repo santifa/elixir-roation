@@ -72,6 +72,11 @@
 
 <.table id="matches" rows={@matches}>
   <:col :let={{_, id}} label="Match Number">{id}</:col>
+  <:col :let={{match, _}} label="Run at">
+    {DateTime.shift_zone!(match.inserted_at, "Europe/Berlin")
+    |> DateTime.to_naive()
+    |> NaiveDateTime.to_string()}
+  </:col>
   <:col :let={{match, _}} label="People">
     <div :for={person <- match.people}>
       {person.name}

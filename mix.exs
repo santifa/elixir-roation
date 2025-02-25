@@ -60,6 +60,7 @@ defmodule ElixirRotation.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:pow, "~> 1.0.38"},
+      {:tzdata, "~> 1.1"},
       {:quantum, "~> 3.5"}
     ]
   end

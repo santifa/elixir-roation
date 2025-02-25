@@ -65,6 +65,9 @@ config :elixir_rotation, :pow,
   user: ElixirRotation.Accounts.User,
   repo: ElixirRotation.Repo
 
+# Get access to timezone databases
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
