@@ -19,7 +19,7 @@ defmodule ElixirRotationWeb.Router do
 
   pipeline :protected do
     plug Pow.Plug.RequireAuthenticated,
-    error_handler: ElixirRotationWeb.AuthErrorHandler
+      error_handler: ElixirRotationWeb.AuthErrorHandler
   end
 
   scope "/" do
@@ -44,11 +44,12 @@ defmodule ElixirRotationWeb.Router do
     # Resource bundles
     resources "/tasks", TaskController, only: [:index, :create, :update, :delete]
     resources "/people", PersonController, only: [:index, :create, :update, :delete]
-    resources "/collections", CollectionController do
+
+    resources "/collections", CollectionController,
+      only: [:index, :create, :update, :delete, :show] do
       post "/run", CollectionController, :run
     end
   end
-
 
   # Other scopes may use custom stacks.
   # scope "/api", ElixirRotationWeb do

@@ -2,64 +2,68 @@
   Collection {@collection.id}
   <:subtitle>This is a collection record for matching tasks and people.</:subtitle>
   <:actions>
-    <.link href={~p"/collections/#{@collection}/edit"}>
-      <.button>Edit collection</.button>
-    </.link>
-    <.link href={~p"/collections/#{@collection}/run"} method="post">
-      <.button>Run Matching</.button>
-    </.link>
+    <div class="flex flex-row gap-4">
+      <.modal_edit title={"Edit #{@collection.name}"} id={@collection.id} icon="hero-pencil-solid">
+        <.collection_form
+          changeset={@changeset}
+          action={~p"/collections/#{@collection}"}
+          available_tasks={@available_tasks}
+          available_people={@available_people}
+          current_people={@collection.people}
+          current_tasks={@collection.tasks}
+          button_text="Update collection"
+          redirect="false"
+        />
+      </.modal_edit>
+
+      <button
+        type="button"
+        class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        <.link method="post" href={~p"/collections/#{@collection}/run"}>
+          <.icon name="hero-play-solid" class="h-4 w-4" />
+        </.link>
+      </button>
+    </div>
   </:actions>
 </.header>
 
-<div class="space-y-10">
-  <.subhead name="General Information" />
-  <.list>
-    <:item title="Name">{@collection.name}</:item>
-    <:item title="Description">{@collection.description}</:item>
-    <:item title="Webhook">{@collection.webhook}</:item>
-    <:item title="Schedule">{@collection.schedule}</:item>
-  </.list>
+<div class="grid grid-cols-2 gap-8 mb-6">
+  <div>
+    <.subhead name="General Information" />
+    <.list>
+      <:item title="Name">{@collection.name}</:item>
+      <:item title="Description">{@collection.description}</:item>
+      <:item title="Webhook">{@collection.webhook}</:item>
+      <:item title="Schedule">{@collection.schedule}</:item>
+    </.list>
+  </div>
 
-  <.subhead name="Collection Items" />
-  <.card title="Tasks" icon="hero-pencil-square-solid" nav="tasks" items={@collection.tasks}>
-    <:link>
-      <.link href={~p"/"} class="ml-1">
-        <.button>Show</.button>
-      </.link>
-    </:link>
-
-    <:link>
-      <.link href={~p"/"} class="ml-1">
-        <.button>Edit</.button>
-      </.link>
-    </:link>
-
-    <:link>
-      <.link href={~p"/"} class="ml-1">
-        <.button>Delete</.button>
-      </.link>
-    </:link>
-  </.card>
-
-  <.card title="People" icon="hero-user-solid" nav="people" items={@collection.people}>
-    <:link>
-      <.link href={~p"/"} class="ml-1">
-        <.button>Show</.button>
-      </.link>
-    </:link>
-
-    <:link>
-      <.link href={~p"/"} class="ml-1">
-        <.button>Edit</.button>
-      </.link>
-    </:link>
-
-    <:link>
-      <.link href={~p"/"} class="ml-1">
-        <.button>Delete</.button>
-      </.link>
-    </:link>
-  </.card>
+  <div>
+    <.subhead name="Collection Items" />
+    <.list>
+      <:item title="Tasks">
+        <div :for={task <- @collection.tasks}>
+          <.link
+            class="font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline"
+            href={~p"/tasks"}
+          >
+            {task.name}
+          </.link>
+        </div>
+      </:item>
+      <:item title="People">
+        <div :for={person <- @collection.people}>
+          <.link
+            class="font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline"
+            href={~p"/people"}
+          >
+            {person.name}
+          </.link>
+        </div>
+      </:item>
+    </.list>
+  </div>
 </div>
 
 <.subhead name="Result" />

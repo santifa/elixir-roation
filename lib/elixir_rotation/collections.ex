@@ -39,7 +39,7 @@ defmodule ElixirRotation.Collections do
     Collection
     |> where([t], t.user_id == ^user.id)
     |> Repo.all()
-    |> Repo.preload([:people, :tasks])
+    |> Repo.preload([:people, :tasks, :matches])
   end
 
 

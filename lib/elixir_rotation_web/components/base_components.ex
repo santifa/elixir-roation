@@ -15,7 +15,7 @@ defmodule ElixirRotationWeb.BaseComponents do
 
   def subhead(assigns) do
     ~H"""
-    <h2 class="mt-8 mb-2 text-md font-semibold">{@name}</h2>
+    <h2 class="mt-4 text-md font-semibold">{@name}</h2>
     """
   end
 

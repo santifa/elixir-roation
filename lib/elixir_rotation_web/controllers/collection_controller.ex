@@ -89,8 +89,8 @@ defmodule ElixirRotationWeb.CollectionController do
 
   @doc """
   Update a collection with all parameters and new assigned people and tasks.
-  If new people or tasks are assigned the second update function is used which
-  add empty lists as the form doesn't return anything.
+  If no people or tasks are assigned one of the other functions are called which
+  add empty lists where the form doesn't return anything.
   """
   def update(conn, %{
         "id" => id,
@@ -98,8 +98,11 @@ defmodule ElixirRotationWeb.CollectionController do
         "assigned_people" => assigned_people,
         "assigned_tasks" => assigned_tasks
       }) do
+    IO.inspect(collection_params)
     user = Pow.Plug.current_user(conn)
     collection = Collections.get_collection!(id, user)
+    available_people = People.list_people(user)
+    available_tasks = Tasks.list_tasks(user)
 
     case Collections.update_collection(
            collection,
@@ -107,26 +110,57 @@ defmodule ElixirRotationWeb.CollectionController do
            assigned_people,
            assigned_tasks
          ) do
-      {:ok, _collection} ->
-        conn
-        |> put_flash(:info, "Collection updated successfully.")
-        |> redirect(to: ~p"/collections")
+      {:ok, collection} ->
+        if "true" == Map.get(collection_params, "redirect") do
+          conn
+          |> put_flash(:info, "Collection updated successfully.")
+          |> redirect(to: ~p"/collections")
+        else
+          changeset = Collections.change_collection(collection)
+
+
+          conn
+          |> put_flash(:info, "Collection updated successfully.")
+          |> render(:show,
+            collection: collection,
+            changeset: changeset,
+            available_people: available_people,
+            available_tasks: available_tasks
+          )
+        end
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        # Get additional information
-        available_people = People.list_people(user)
-        current_people = Collections.get_people_on_collection(collection)
-        available_tasks = Tasks.list_tasks(user)
-        current_tasks = Collections.get_tasks_on_collection(collection)
+        [{field, {msg, _}} | _] = changeset.errors
 
-        render(conn, :edit,
-          collection: collection,
-          changeset: changeset,
-          current_people: current_people,
-          available_people: available_people,
-          current_tasks: current_tasks,
-          available_tasks: available_tasks
-        )
+        if "true" == Map.get(collection_params, "redirect") do
+          collections = get_prepared_collections(user)
+          new_changeset = Collections.change_collection(%Collection{})
+
+          conn
+          |> put_flash(
+            :error,
+            "Failed to update collection #{collection.id} #{field} with #{msg}"
+          )
+          |> render(:index,
+            collections: collections,
+            changeset: new_changeset,
+            available_people: available_people,
+            available_tasks: available_tasks
+          )
+        else
+          collection = Collections.get_collection_preloaded!(id, user)
+          conn
+          |> put_flash(
+            :error,
+            "Failed to update collection #{collection.id} #{field} with #{msg}"
+          )
+          |> render(:show,
+            collection: collection,
+            changeset: changeset,
+            available_people: available_people,
+            available_tasks: available_tasks
+          )
+        end
     end
   end
 
@@ -149,7 +183,17 @@ defmodule ElixirRotationWeb.CollectionController do
   def show(conn, %{"id" => id}) do
     user = Pow.Plug.current_user(conn)
     collection = Collections.get_collection_preloaded!(id, user)
-    render(conn, :show, collection: collection)
+    available_people = People.list_people(user)
+    available_tasks = Tasks.list_tasks(user)
+    changeset = Collections.change_collection(collection)
+    # Map.put(collection, :changeset, changeset)
+
+    render(conn, :show,
+      collection: collection,
+      changeset: changeset,
+      available_people: available_people,
+      available_tasks: available_tasks
+    )
   end
 
   @doc """
@@ -166,6 +210,7 @@ defmodule ElixirRotationWeb.CollectionController do
   end
 
   def run(conn, %{"collection_id" => id}) do
+    IO.inspect(id)
     user = Pow.Plug.current_user(conn)
     collection = Collections.get_collection!(id, user)
     %{:task => task, :person => person} = TaskMatcher.match_tasks(collection, :random_one)

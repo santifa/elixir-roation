@@ -27,6 +27,9 @@
     options={Enum.map(@available_tasks, fn t -> {t.name, t.id} end)}
   />
 
+    <div class="invisible">
+      <.input field={f[:redirect]} type="text"  value={@redirect} />
+    </div>
   <:actions>
     <.button>{@button_text}</.button>
   </:actions>
