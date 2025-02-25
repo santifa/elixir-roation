@@ -2,10 +2,31 @@
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
-  <.input field={f[:name]} type="text" label="Name" />
-  <.input field={f[:description]} type="text" label="Description" />
-  <.input field={f[:webhook]} type="text" label="Webhook" />
-  <.input field={f[:schedule]} type="text" label="Schedule" />
+  <div class="grid grid-cols-2 gap-4 justify-center">
+    <div>
+      <.input field={f[:name]} type="text" label="Name" />
+    </div>
+    <div>
+      <.input field={f[:description]} type="text" label="Description" />
+    </div>
+    <div>
+      <.input field={f[:webhook]} type="text" label="Webhook" />
+    </div>
+    <div>
+      <.input field={f[:schedule]} type="text" label="Schedule" />
+    </div>
+    <div>
+      <.input
+        field={f[:algorithm]}
+        type="select"
+        label="Algorithm"
+        options={["random_one", "random_all_fit", "random_all"]}
+      />
+    </div>
+    <div class="mt-8">
+      <.input field={f[:put_back]} type="checkbox" label="Use again" />
+    </div>
+  </div>
 
   <.input
     field={{f, :people}}
@@ -27,9 +48,9 @@
     options={Enum.map(@available_tasks, fn t -> {t.name, t.id} end)}
   />
 
-    <div class="invisible">
-      <.input field={f[:redirect]} type="text"  value={@redirect} />
-    </div>
+  <div class="invisible hidden">
+    <.input field={f[:redirect]} type="text" value={@redirect} />
+  </div>
   <:actions>
     <.button>{@button_text}</.button>
   </:actions>

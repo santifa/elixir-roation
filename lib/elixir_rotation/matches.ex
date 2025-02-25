@@ -17,8 +17,22 @@ defmodule ElixirRotation.Matches do
       [%Match{}, ...]
 
   """
-  def list_matches do
+  def list_user_matches(user) do
+    Match
+    |> where([t], t.user_id == ^user.id)
     Repo.all(Match)
+  end
+
+  @doc """
+  Returns the list of matches which belong to a certain collection.
+  """
+  def list_collection_matches(user, collection) do
+    Match
+    |> where([m], m.user_id == ^user.id)
+    |> where([m], m.collection_id == ^collection.id)
+    |> Repo.all()
+    |> Repo.preload([:people, :tasks])
+    |> Enum.with_index()
   end
 
   @doc """
@@ -35,7 +49,7 @@ defmodule ElixirRotation.Matches do
       ** (Ecto.NoResultsError)
 
   """
-  def get_match!(id), do: Repo.get!(Match, id)
+  def get_match!(id, user), do: Repo.get!(Match, id: id, user_id: user.id)
 
   @doc """
   Creates a match.
@@ -53,8 +67,8 @@ defmodule ElixirRotation.Matches do
     %Match{}
     |> Match.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:people, people)
-    |>Ecto.Changeset.put_assoc(:tasks, tasks)
-|> Repo.insert()
+    |> Ecto.Changeset.put_assoc(:tasks, tasks)
+    |> Repo.insert()
   end
 
 

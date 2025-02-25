@@ -7,6 +7,8 @@ defmodule ElixirRotation.Collections.Collection do
     field :description, :string
     field :webhook, :string
     field :schedule, :string
+    field :algorithm, Ecto.Enum, values: [:random_one, :random_all_fit, :random_all], default: :random_one
+    field :put_back, :boolean, default: true
 
     belongs_to :user, ElixirRotation.Accounts.User
     many_to_many :people, ElixirRotation.People.Person,
@@ -23,8 +25,8 @@ defmodule ElixirRotation.Collections.Collection do
   @doc false
   def changeset(collection, attrs) do
     collection
-    |> cast(attrs, [:name, :description, :webhook, :schedule, :user_id])
-    |> validate_required([:name, :user_id])
+    |> cast(attrs, [:name, :description, :webhook, :schedule, :user_id, :algorithm, :put_back])
+    |> validate_required([:name, :user_id, :algorithm, :put_back])
     |> validate_format(:webhook, ~r/^https?:\/\/[\w\-]+(\.[\w\-]+)+[#?\/\w\-]*$/)
     |> assoc_constraint(:user)
     |> cast_assoc(:people)

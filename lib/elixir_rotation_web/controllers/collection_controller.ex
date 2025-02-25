@@ -117,7 +117,7 @@ defmodule ElixirRotationWeb.CollectionController do
           |> redirect(to: ~p"/collections")
         else
           changeset = Collections.change_collection(collection)
-
+          matches = Matches.list_collection_matches(user, collection)
 
           conn
           |> put_flash(:info, "Collection updated successfully.")
@@ -125,7 +125,8 @@ defmodule ElixirRotationWeb.CollectionController do
             collection: collection,
             changeset: changeset,
             available_people: available_people,
-            available_tasks: available_tasks
+            available_tasks: available_tasks,
+            matches: matches
           )
         end
 
@@ -149,6 +150,8 @@ defmodule ElixirRotationWeb.CollectionController do
           )
         else
           collection = Collections.get_collection_preloaded!(id, user)
+          matches = Matches.list_collection_matches(user, collection)
+
           conn
           |> put_flash(
             :error,
@@ -158,7 +161,8 @@ defmodule ElixirRotationWeb.CollectionController do
             collection: collection,
             changeset: changeset,
             available_people: available_people,
-            available_tasks: available_tasks
+            available_tasks: available_tasks,
+            matches: matches
           )
         end
     end
@@ -186,13 +190,14 @@ defmodule ElixirRotationWeb.CollectionController do
     available_people = People.list_people(user)
     available_tasks = Tasks.list_tasks(user)
     changeset = Collections.change_collection(collection)
-    # Map.put(collection, :changeset, changeset)
+    matches = Matches.list_collection_matches(user, collection)
 
     render(conn, :show,
       collection: collection,
       changeset: changeset,
       available_people: available_people,
-      available_tasks: available_tasks
+      available_tasks: available_tasks,
+      matches: matches
     )
   end
 

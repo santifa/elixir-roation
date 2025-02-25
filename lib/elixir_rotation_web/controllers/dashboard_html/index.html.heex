@@ -1,19 +1,58 @@
 <.header>
-  Welcome back {@current_user.email}!
-  <.flash_group flash={@flash} />
+  Welcome back {@current_user.email}! <.flash_group flash={@flash} />
 </.header>
 
-<section>
-  <p class="my-4">
-    This application allows you to create collections of tasks and people.
-    These are matched by an interval specified by you and call a webhook
-    defined by you afterwards.
-  </p>
+<section class="grid grid-cols-2 gap-10">
+  <div>
+    <p class="my-4">
+      This application allows you to create collections of tasks and people.
+      These are matched by an interval specified by you and call a webhook
+      defined by you afterwards.
+    </p>
 
-  <p class="my-4">
-    While tasks and people are the names used by <em>Elixir rotation</em> to define
-    different sets for matching. You're free to insert everything you want, for example
-    server and songs or cuddly toy and babies.
-  </p>
+    <p class="my-4">
+      While tasks and people are the names used by <em>Elixir rotation</em> to define
+      different sets for matching. You're free to insert everything you want, for example
+      server and songs or cuddly toy and babies.
+    </p>
+  </div>
 
+  <div>
+    <h2 class="mt-4 text-md font-semibold">Helpful Information</h2>
+
+    <p class="my-4">
+      <ul class="space-y-4 text-gray-500 list-disc list-inside dark:text-gray-700">
+        <li>
+          Schedule
+          <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+            <li>
+              Use
+              <.link
+                class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                href="https://cron.help/"
+              >
+                cron.help
+              </.link>
+              to write correct schedules.
+            </li>
+          </ol>
+        </li>
+        <li>
+          Webhooks
+          <ul class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+            <li>A webhook is only called if it is set.</li>
+          </ul>
+        </li>
+        <li>
+          Use again flag
+          <ul class="ps-5 mt-2 space-y-1 list-decimal list-inside">
+            <li>If the flag is set then already matched elements are taken into account
+              for the next match.</li>
+            <li>If the flag is not set the nthe elements are only used again after all
+              elements are matched.</li>
+          </ul>
+        </li>
+      </ul>
+    </p>
+  </div>
 </section>

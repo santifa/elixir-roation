@@ -33,7 +33,7 @@ defmodule ElixirRotation.TaskMatcher do
   is started.
 
   """
-  def match_tasks(collection, variation, dependent \\ true) do
+  def match_tasks(collection, variation, put_back \\ true) do
     collection = Repo.preload(collection, [:people, :tasks])
 
     case variation do
