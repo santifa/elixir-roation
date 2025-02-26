@@ -3,7 +3,8 @@ defmodule ElixirRotation.Matches.Match do
   import Ecto.Changeset
 
   schema "matches" do
-    field :random_type, :string
+    field :round, :integer
+    field :assignment, :map
 
     belongs_to :user, ElixirRotation.Accounts.User
     belongs_to :collection, ElixirRotation.Collections.Collection
@@ -21,8 +22,8 @@ defmodule ElixirRotation.Matches.Match do
   @doc false
   def changeset(match, attrs) do
     match
-    |> cast(attrs, [:random_type, :user_id, :collection_id])
-    |> validate_required([:random_type, :user_id, :collection_id])
+    |> cast(attrs, [:user_id, :collection_id, :round, :assignment])
+    |> validate_required([:round, :user_id, :collection_id, :assignment])
     |> assoc_constraint(:user)
     |> assoc_constraint(:collection)
     |> cast_assoc(:people)

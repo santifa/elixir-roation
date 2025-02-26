@@ -3,8 +3,9 @@ defmodule ElixirRotation.Repo.Migrations.CreateMatches do
 
   def change do
     create table(:matches) do
-      # add :execution_time, :utc_datetime
-      add :random_type, :string
+      add :round, :integer
+      add :assignment, :map
+
       add :user_id, references(:users, on_delete: :nothing)
       add :collection_id, references(:collections, on_delete: :nothing)
 
