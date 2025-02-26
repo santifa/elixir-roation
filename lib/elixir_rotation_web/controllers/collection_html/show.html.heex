@@ -13,6 +13,7 @@
           current_tasks={@collection.tasks}
           button_text="Update collection"
           redirect="false"
+          disabled="true"
         />
       </.modal_edit>
 
@@ -72,6 +73,7 @@
 
 <.table id="matches" rows={@matches}>
   <:col :let={{_, id}} label="Match Number">{id}</:col>
+  <:col :let={{match, _}} label="Round">{match.round}</:col>
   <:col :let={{match, _}} label="Run at">
     {DateTime.shift_zone!(match.inserted_at, "Europe/Berlin")
     |> DateTime.to_naive()

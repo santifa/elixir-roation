@@ -5,7 +5,6 @@ defmodule ElixirRotation.Matches do
 
   import Ecto.Query, warn: false
   alias ElixirRotation.Repo
-
   alias ElixirRotation.Matches.Match
 
   @doc """
@@ -33,6 +32,13 @@ defmodule ElixirRotation.Matches do
     |> Repo.all()
     |> Repo.preload([:people, :tasks])
     |> Enum.with_index()
+  end
+
+  def list_collection_matches(collection) do
+    Match
+    |> where([m], m.collection_id == ^collection.id)
+    |> Repo.all()
+    |> Repo.preload([:people, :tasks])
   end
 
   @doc """

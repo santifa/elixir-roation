@@ -7,6 +7,7 @@
   <:col :let={collection} label="Description">{collection.description}</:col>
   <:col :let={collection} label="Webhook">{collection.webhook}</:col>
   <:col :let={collection} label="Schedule">{collection.schedule}</:col>
+  <:col :let={collection} label="Algorithm">{collection.algorithm}</:col>
   <:col :let={collection} label="Tasks">{length(collection.tasks)}</:col>
   <:col :let={collection} label="People">{length(collection.people)}</:col>
   <:col :let={collection} label="Matches">{length(collection.matches)}</:col>
@@ -23,7 +24,8 @@
           current_tasks={collection.tasks}
           button_text="Update collection"
           redirect="true"
-        />
+          disabled="true"
+          />
       </.modal_edit>
 
       <.delete_modal
@@ -56,6 +58,7 @@
     current_tasks={[]}
     button_text="Create collection"
     redirect="true"
+    disabled="false"
   />
 </.modal_edit>
 

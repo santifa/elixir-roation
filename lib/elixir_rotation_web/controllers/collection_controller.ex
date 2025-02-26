@@ -215,13 +215,12 @@ defmodule ElixirRotationWeb.CollectionController do
   end
 
   def run(conn, %{"collection_id" => id}) do
-    IO.inspect(id)
     user = Pow.Plug.current_user(conn)
     collection = Collections.get_collection!(id, user)
-    %{:task => task, :person => person} = TaskMatcher.match_tasks(collection, :random_one)
-    match = %{user_id: user.id, collection_id: id, random_type: "random_one"}
+    %{:tasks => tasks, :people => people, :round => round} = TaskMatcher.match_tasks(collection)
+    match = %{user_id: user.id, collection_id: id, round: round}
 
-    case Matches.create_match(match, [task], [person]) do
+    case Matches.create_match(match, tasks, people) do
       {:ok, match} ->
         conn
         |> put_flash(:info, "Match #{match.id} created for #{collection.name}")

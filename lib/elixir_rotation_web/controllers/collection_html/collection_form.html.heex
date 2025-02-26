@@ -4,29 +4,55 @@
   </.error>
   <div class="grid grid-cols-2 gap-4 justify-center">
     <div>
-      <.input field={f[:name]} type="text" label="Name" />
+      <.input field={f[:name]} type="text" label="Name" placeholder="Collection Name" />
     </div>
     <div>
-      <.input field={f[:description]} type="text" label="Description" />
+      <.input field={f[:description]} type="text" label="Description" placeholder="Description" />
     </div>
     <div>
-      <.input field={f[:webhook]} type="text" label="Webhook" />
+      <.input field={f[:webhook]} type="text" label="Webhook" placeholder="https://call-me.com/hook" />
     </div>
     <div>
-      <.input field={f[:schedule]} type="text" label="Schedule" />
+      <.input field={f[:schedule]} type="text" label="Schedule" placeholder="*" />
     </div>
     <div>
-      <.input
-        field={f[:algorithm]}
-        type="select"
-        label="Algorithm"
-        options={["random_one", "random_all_fit", "random_all"]}
-      />
+      <%= if @disabled == "true" do %>
+        <.input
+          field={f[:algorithm]}
+          type="select"
+          label="Algorithm"
+          options={["random_one", "random_all_fit", "random_all"]}
+          disabled
+          id="disabled-algorithm"
+          aria-label="disabled algorithm"
+          />
+      <% else %>
+        <.input
+          field={f[:algorithm]}
+          type="select"
+          label="Algorithm"
+          options={["random_one", "random_all_fit", "random_all"]}
+        />
+      <% end %>
     </div>
     <div class="mt-8">
-      <.input field={f[:put_back]} type="checkbox" label="Use again" />
+      <%= if @disabled == "true" do %>
+        <.input
+          field={f[:put_back]}
+          type="checkbox"
+          label="Use again"
+          disabled
+          id="disabled-put-back"
+          aria-label="disabled put-back"
+          data-tooltip-target="tooltip-put-back"
+        />
+      <% else %>
+        <.input field={f[:put_back]} type="checkbox" label="Use again"
+        data-tooltip-target="tooltip-put-back" />
+      <% end %>
     </div>
   </div>
+
 
   <.input
     field={{f, :people}}
@@ -54,4 +80,11 @@
   <:actions>
     <.button>{@button_text}</.button>
   </:actions>
+
+
+  <div id="tooltip-put-back" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
+    Only used by <em>random_one</em>
+    <div class="tooltip-arrow" data-popper-arrow></div>
+</div>
+
 </.simple_form>

@@ -8,7 +8,7 @@ defmodule ElixirRotation.Collections.Collection do
     field :webhook, :string
     field :schedule, :string
     field :algorithm, Ecto.Enum, values: [:random_one, :random_all_fit, :random_all], default: :random_one
-    field :put_back, :boolean, default: true
+    field :put_back, :boolean, default: false
 
     belongs_to :user, ElixirRotation.Accounts.User
     many_to_many :people, ElixirRotation.People.Person,
