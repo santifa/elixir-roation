@@ -118,6 +118,7 @@ defmodule ElixirRotationWeb.CollectionController do
         else
           changeset = Collections.change_collection(collection)
           matches = Matches.list_collection_matches(user, collection)
+          matches = resolve_assignments(matches)
 
           conn
           |> put_flash(:info, "Collection updated successfully.")
@@ -151,6 +152,7 @@ defmodule ElixirRotationWeb.CollectionController do
         else
           collection = Collections.get_collection_preloaded!(id, user)
           matches = Matches.list_collection_matches(user, collection)
+          matches = resolve_assignments(matches)
 
           conn
           |> put_flash(
@@ -190,7 +192,9 @@ defmodule ElixirRotationWeb.CollectionController do
     available_people = People.list_people(user)
     available_tasks = Tasks.list_tasks(user)
     changeset = Collections.change_collection(collection)
+
     matches = Matches.list_collection_matches(user, collection)
+    matches = resolve_assignments(matches)
 
     render(conn, :show,
       collection: collection,
@@ -207,6 +211,7 @@ defmodule ElixirRotationWeb.CollectionController do
   def delete(conn, %{"id" => id}) do
     user = Pow.Plug.current_user(conn)
     collection = Collections.get_collection!(id, user)
+    IO.inspect(collection)
     {:ok, _collection} = Collections.delete_collection(collection)
 
     conn
@@ -217,21 +222,52 @@ defmodule ElixirRotationWeb.CollectionController do
   def run(conn, %{"collection_id" => id}) do
     user = Pow.Plug.current_user(conn)
     collection = Collections.get_collection!(id, user)
-    %{:tasks => tasks, :people => people, :round => round} = TaskMatcher.match_tasks(collection)
-    match = %{user_id: user.id, collection_id: id, round: round}
+
+    %{:assignment => assignment, :tasks => tasks, :people => people, :round => round} =
+      TaskMatcher.match_tasks(collection)
+    match = %{user_id: user.id, collection_id: id, round: round, assignment: assignment}
+    IO.inspect(match)
 
     case Matches.create_match(match, tasks, people) do
-      {:ok, match} ->
+      {:ok, _match} ->
         conn
-        |> put_flash(:info, "Match #{match.id} created for #{collection.name}")
+        |> put_flash(:info, "Match created for #{collection.name}")
         |> redirect(to: ~p"/collections/#{id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         IO.inspect(changeset)
+        [{field, {msg, _}} | _] = changeset.errors
 
         conn
-        |> put_flash(:error, "Creating match failed")
+        |> put_flash(:error, "Creating match failed for field #{field} with '#{msg}'")
         |> redirect(to: ~p"/collections/#{id}")
     end
+  end
+
+  @doc """
+  Returns the assignments between people and tasks.
+  It resolves the id to the real people and tasks.
+  """
+  def resolve_assignments({person_id, assigned_tasks}, people, tasks) do
+    {id, _} = Integer.parse(person_id)
+    person = Enum.find(people, fn p -> p.id == id  end)
+    tasks = Enum.filter(tasks, fn t -> Enum.any?(assigned_tasks, fn at -> at == t.id end) end)
+    {person, tasks}
+  end
+
+  def resolve_assignments(assignments, people, tasks) do
+    Enum.map(assignments, fn a -> resolve_assignments(a, people, tasks) end)
+  end
+
+  def resolve_assignments(matches) do
+    matches = Enum.map(matches, fn m -> Map.put(m, :assignment, Map.to_list(m.assignment)) end)
+    matches =  Enum.map(matches, fn m ->
+        Map.put(
+          m,
+          :assignment,
+          resolve_assignments(m.assignment, m.people, m.tasks)
+        )
+    end)
+    Enum.with_index(matches)
   end
 end

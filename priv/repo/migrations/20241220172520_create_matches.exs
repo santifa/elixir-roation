@@ -6,8 +6,8 @@ defmodule ElixirRotation.Repo.Migrations.CreateMatches do
       add :round, :integer
       add :assignment, :map
 
-      add :user_id, references(:users, on_delete: :nothing)
-      add :collection_id, references(:collections, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :delete_all)
+      add :collection_id, references(:collections, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end

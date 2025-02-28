@@ -66,12 +66,15 @@ defmodule ElixirRotation.TaskMatcher do
     round = get_current_round(collection)
 
     if collection.put_back do
-      task_id = 0..(length(collection.tasks) - 1) |> Enum.random()
-      person_id = 0..(length(collection.people) - 1) |> Enum.random()
+      task_pos = 0..(length(collection.tasks) - 1) |> Enum.random()
+      task = Enum.at(collection.tasks, task_pos)
+      person_pos = 0..(length(collection.people) - 1) |> Enum.random()
+      person = Enum.at(collection.people, person_pos)
 
       %{
-        tasks: [Enum.at(collection.tasks, task_id)],
-        people: [Enum.at(collection.people, person_id)],
+        assignment: %{person.id => [task.id]},
+        tasks: [task],
+        people: [person],
         round: round + 1
       }
     else
@@ -86,10 +89,7 @@ defmodule ElixirRotation.TaskMatcher do
       # Calculate the distribution of all people names
       people_distribution = Enum.frequencies_by(people, & &1.name)
 
-      IO.puts("Print")
-      IO.inspect(people)
-
-      %{tasks: [], people: [], round: round + 1}
+      %{assignment: %{}, tasks: [], people: [], round: round + 1}
     end
   end
 
@@ -103,8 +103,23 @@ defmodule ElixirRotation.TaskMatcher do
   """
   def random_select_all(collection) do
     round = get_current_round(collection)
+    people = Enum.shuffle(collection.people)
+    tasks = Enum.shuffle(collection.tasks)
 
-      %{tasks: [], people: [], round: round + 1}
+    assignment =
+      if length(tasks) > length(people) do
+        people =
+          people ++ Enum.map(1..(length(tasks) - length(people)), fn _ -> Enum.random(people) end)
+
+        Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)
+      else
+        Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)
+      end
+
+    assignment =
+      Enum.reduce(assignment, fn x, acc -> Map.merge(acc, x, fn _k, v1, v2 -> v1 ++ v2 end) end)
+
+    %{assignment: assignment, tasks: tasks, people: people, round: round + 1}
   end
 
   @doc """
@@ -118,8 +133,11 @@ defmodule ElixirRotation.TaskMatcher do
   """
   def random_select_all_fit(collection) do
     round = get_current_round(collection)
-
-    %{tasks: [], people: [], round: round + 1}
+    people = Enum.shuffle(collection.people)
+    tasks = Enum.shuffle(collection.tasks)
+    assignment = Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)
+    assignment = Enum.reduce(assignment, &Map.merge/2)
+    %{assignment: assignment, tasks: tasks, people: people, round: round + 1}
   end
 
   @doc """

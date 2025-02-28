@@ -79,15 +79,14 @@
     |> DateTime.to_naive()
     |> NaiveDateTime.to_string()}
   </:col>
-  <:col :let={{match, _}} label="People">
-    <div :for={person <- match.people}>
-      {person.name}
-    </div>
-  </:col>
-  <:col :let={{match, _}} label="Tasks">
-    <div :for={task <- match.tasks}>
-      {task.name}
-    </div>
+  <:col :let={{match, _}} label="Assignments">
+    <ul>
+      <li :for={{person, tasks} <- match.assignment}>
+        <div class="flex flex-row">
+          {person.name} -> [<%= Enum.map(tasks, &(&1.name)) |> Enum.join(", ") %>]
+        </div>
+      </li>
+    </ul>
   </:col>
 </.table>
 
