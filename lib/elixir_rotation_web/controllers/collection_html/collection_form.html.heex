@@ -13,8 +13,11 @@
       <.input field={f[:webhook]} type="text" label="Webhook" placeholder="https://call-me.com/hook" />
     </div>
     <div>
-      <.input field={f[:schedule]} type="text" label="Schedule" placeholder="*" />
+      <.input field={f[:webhook_variable]} type="text" label="Webhook Variable" placeholder="content" />
     </div>
+    <div>
+      <.input field={f[:schedule]} type="text" label="Schedule" placeholder="*" />
+    </div><br />
     <div>
       <%= if @disabled == "true" do %>
         <.input

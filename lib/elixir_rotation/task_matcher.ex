@@ -150,7 +150,8 @@ defmodule ElixirRotation.TaskMatcher do
   are randomly assigned between all people.
   """
   def random_select_all(collection) do
-    round = get_current_round(collection)
+    matches = Matches.list_collection_matches(collection)
+    round = get_current_round(matches)
     people = Enum.shuffle(collection.people)
     tasks = Enum.shuffle(collection.tasks)
 
@@ -178,7 +179,8 @@ defmodule ElixirRotation.TaskMatcher do
   are unassigned.
   """
   def random_select_all_fit(collection) do
-    round = get_current_round(collection)
+    matches = Matches.list_collection_matches(collection)
+    round = get_current_round(matches)
     people = Enum.shuffle(collection.people)
     tasks = Enum.shuffle(collection.tasks)
     assignment = Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)

@@ -228,10 +228,21 @@ defmodule ElixirRotationWeb.CollectionController do
         match = %{user_id: user.id, collection_id: id, round: round, assignment: assignment}
 
         case Matches.create_match(match, tasks, people) do
-          {:ok, _match} ->
-            conn
-            |> put_flash(:info, "Match created for #{collection.name}")
-            |> redirect(to: ~p"/collections/#{id}")
+          {:ok, match} ->
+            case call_webhook(match, collection) do
+              {:ok, response} ->
+                IO.inspect(response)
+
+                conn
+                |> put_flash(:info, "Match created for #{collection.name} and hook called.")
+                |> redirect(to: ~p"/collections/#{id}")
+              {:error, msg} ->
+                IO.inspect(msg)
+
+                conn
+                |> put_flash(:info, "Match created for #{collection.name} and calling failed.")
+                |> redirect(to: ~p"/collections/#{id}")
+            end
 
           {:error, %Ecto.Changeset{} = changeset} ->
             IO.inspect(changeset)
@@ -247,6 +258,23 @@ defmodule ElixirRotationWeb.CollectionController do
         |> put_flash(:error, "Creating match failed with '#{msg}'")
         |> redirect(to: ~p"/collections/#{id}")
     end
+  end
+
+  def call_webhook(match, %{
+        :webhook => hook,
+        :webhook_variable => var
+      }) do
+    assignments = resolve_assignments(match.assignment, match.people, match.tasks)
+    |> Enum.map(fn {person, tasks} -> {person.name,  Enum.map(tasks, &(&1.name)) |> Enum.join(", ")} end)
+    |> Enum.map(fn {p, t} -> "#{p} -> #{t}" end)
+    |> Enum.join("\n")
+
+    body = "{ \"#{var}\": \"#{assignments}\"}"
+    HTTPoison.post(hook, body)
+  end
+
+  def call_webhook(_match, _collection) do
+    IO.puts("No webhook defined")
   end
 
   @doc """

@@ -6,6 +6,7 @@ defmodule ElixirRotation.Repo.Migrations.CreateCollections do
       add :name, :string
       add :description, :text
       add :webhook, :string
+      add :webhook_variable, :string
       add :schedule, :string
       add :algorithm, :string
       add :put_back, :boolean
