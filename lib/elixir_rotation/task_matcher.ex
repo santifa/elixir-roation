@@ -15,42 +15,45 @@ defmodule ElixirRotation.TaskMatcher do
 
   Assigns a random tasks to a random person.
 
-  ### `:random_all`
-
-  Assigns all tasks randomly to all persons. If they're
-  more tasks then people the tasks are not assigned.
-
-  ### `:random_all_fit`
-
-  Assigns all tasks randomly to all persons. If they're
-  more tasks then people some of them get multiple tasks.
-
-  ### dependent matches
+  #### dependent matches
 
   Toggle if a future match is dependent on prior matches.
   For example a person matched in a prior match is only added
   back to the urn if all people are matched and a "new round"
   is started.
 
+  ### `:random_all`
+
+  Assigns all tasks randomly to all persons. If they're
+  more tasks then people some of them get multiple tasks.
+
+  ### `:random_all_fit`
+
+  Assigns all tasks randomly to all persons. If they're
+  more tasks then people the tasks are not assigned.
   """
   def match_tasks(collection) do
     collection = Repo.preload(collection, [:people, :tasks])
 
-    case collection.algorithm do
-      :random_one ->
-        IO.puts("Choosing one random match")
-        random_select_one(collection)
+    if length(collection.tasks) < 1 or length(collection.people) < 1 do
+      {:error, "Not enough tasks or people"}
+    else
+      assignment =
+        case collection.algorithm do
+          :random_one ->
+            random_select_one(collection)
 
-      :random_all_fit ->
-        IO.puts("Choosing all random match with fit")
-        random_select_all_fit(collection)
+          :random_all_fit ->
+            random_select_all_fit(collection)
 
-      :random_all ->
-        IO.puts("Choosing all random match")
-        random_select_all(collection)
+          :random_all ->
+            random_select_all(collection)
 
-      _ ->
-        IO.puts("Algorithm variation unknown.")
+          _ ->
+            {:error, "Algorithm unknown"}
+        end
+
+      {:ok, assignment}
     end
   end
 
@@ -63,34 +66,79 @@ defmodule ElixirRotation.TaskMatcher do
   from the category (people, tasks) are used in the round.
   """
   def random_select_one(collection) do
-    round = get_current_round(collection)
+    # Get all previous matches
+    matches = Matches.list_collection_matches(collection)
+    round = get_current_round(matches)
 
-    if collection.put_back do
-      task_pos = 0..(length(collection.tasks) - 1) |> Enum.random()
-      task = Enum.at(collection.tasks, task_pos)
-      person_pos = 0..(length(collection.people) - 1) |> Enum.random()
-      person = Enum.at(collection.people, person_pos)
+    {tasks, people} =
+      if collection.put_back or length(matches) < 1 do
+        {collection.tasks, collection.people}
+      else
+        random_select_one(collection, matches)
+      end
 
-      %{
-        assignment: %{person.id => [task.id]},
-        tasks: [task],
-        people: [person],
-        round: round + 1
-      }
-    else
-      # Get people defined in collection.
-      collection_people = collection.people
-      # Get all previous matches
-      matches = Matches.list_collection_matches(collection)
+    task_pos = 0..(length(tasks) - 1) |> Enum.random()
+    task = Enum.at(tasks, task_pos)
+    person_pos = 0..(length(people) - 1) |> Enum.random()
+    person = Enum.at(people, person_pos)
 
-      # Get the list of all people
-      people = Enum.flat_map(matches, fn m -> m.people end)
+    round =
+      if length(tasks) != length(collection.tasks) or length(tasks) != length(collection.tasks) do
+        round
+      else
+        # Increase the round if the stored and used tasks or people are equal
+        round + 1
+      end
 
-      # Calculate the distribution of all people names
-      people_distribution = Enum.frequencies_by(people, & &1.name)
+    %{
+      assignment: %{person.id => [task.id]},
+      tasks: [task],
+      people: [person],
+      round: round
+    }
+  end
 
-      %{assignment: %{}, tasks: [], people: [], round: round + 1}
-    end
+  @doc """
+  Return a tuple of tasks and people.
+
+  This handles the case where `put_back` is set to true.
+  It filters all tasks or people from the current round out of
+  the original collection tasks or people. All remaining tasks and people
+  are returned for the next matching round.
+
+  NOTE: If the tasks or people are unequal and for example all people are already
+  matched but some tasks are left, then all people are taken into account for the
+  matching until all tasks are matched and the next round is started.
+  """
+  def random_select_one(collection, matches) do
+    # Get all people and tasks from the current matching round
+    max_round = get_current_round(matches)
+
+    current_round_people =
+      matches |> Enum.filter(fn m -> m.round == max_round end) |> Enum.flat_map(& &1.people)
+
+    current_round_tasks =
+      matches |> Enum.filter(fn m -> m.round == max_round end) |> Enum.flat_map(& &1.tasks)
+
+    # Filter all people and tasks which are unmatched in the current round
+    people = collection.people |> Enum.filter(fn p -> p not in current_round_people end)
+    tasks = collection.tasks |> Enum.filter(fn p -> p not in current_round_tasks end)
+    # If all tasks or people are already matched in the current round return the original list
+    people =
+      if length(people) == 0 do
+        collection.people
+      else
+        people
+      end
+
+    tasks =
+      if length(tasks) == 0 do
+        collection.tasks
+      else
+        tasks
+      end
+
+    {tasks, people}
   end
 
   @doc """
@@ -106,15 +154,14 @@ defmodule ElixirRotation.TaskMatcher do
     people = Enum.shuffle(collection.people)
     tasks = Enum.shuffle(collection.tasks)
 
-    assignment =
+    people =
       if length(tasks) > length(people) do
-        people =
-          people ++ Enum.map(1..(length(tasks) - length(people)), fn _ -> Enum.random(people) end)
-
-        Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)
+        people ++ Enum.map(1..(length(tasks) - length(people)), fn _ -> Enum.random(people) end)
       else
-        Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)
+        people
       end
+
+    assignment = Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)
 
     assignment =
       Enum.reduce(assignment, fn x, acc -> Map.merge(acc, x, fn _k, v1, v2 -> v1 ++ v2 end) end)
@@ -124,7 +171,6 @@ defmodule ElixirRotation.TaskMatcher do
 
   @doc """
   Returns an assignment pairing all people with all tasks.
-
 
   If they're more people than tasks only a subset of people
   get a task assigned.
@@ -137,14 +183,14 @@ defmodule ElixirRotation.TaskMatcher do
     tasks = Enum.shuffle(collection.tasks)
     assignment = Enum.zip(people, tasks) |> Enum.map(fn {p, t} -> %{"#{p.id}" => [t.id]} end)
     assignment = Enum.reduce(assignment, &Map.merge/2)
+
     %{assignment: assignment, tasks: tasks, people: people, round: round + 1}
   end
 
   @doc """
   Return the last round set within the matches.
   """
-  def get_current_round(collection) do
-    matches = Matches.list_collection_matches(collection)
+  def get_current_round(matches) do
     Enum.max_by(matches, fn m -> m.round end, fn -> %{round: 0} end).round
   end
 end

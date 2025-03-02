@@ -83,7 +83,7 @@
     <ul>
       <li :for={{person, tasks} <- match.assignment}>
         <div class="flex flex-row">
-          {person.name} -> [<%= Enum.map(tasks, &(&1.name)) |> Enum.join(", ") %>]
+          {person.name} -> <%= Enum.map(tasks, &(&1.name)) |> Enum.join(", ") %>
         </div>
       </li>
     </ul>

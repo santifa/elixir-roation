@@ -194,7 +194,7 @@ defmodule ElixirRotationWeb.CollectionController do
     changeset = Collections.change_collection(collection)
 
     matches = Matches.list_collection_matches(user, collection)
-    matches = resolve_assignments(matches)
+    matches = resolve_assignments(matches) |> Enum.reverse()
 
     render(conn, :show,
       collection: collection,
@@ -223,23 +223,28 @@ defmodule ElixirRotationWeb.CollectionController do
     user = Pow.Plug.current_user(conn)
     collection = Collections.get_collection!(id, user)
 
-    %{:assignment => assignment, :tasks => tasks, :people => people, :round => round} =
-      TaskMatcher.match_tasks(collection)
-    match = %{user_id: user.id, collection_id: id, round: round, assignment: assignment}
-    IO.inspect(match)
+    case TaskMatcher.match_tasks(collection) do
+      {:ok, %{:assignment => assignment, :tasks => tasks, :people => people, :round => round}} ->
+        match = %{user_id: user.id, collection_id: id, round: round, assignment: assignment}
 
-    case Matches.create_match(match, tasks, people) do
-      {:ok, _match} ->
+        case Matches.create_match(match, tasks, people) do
+          {:ok, _match} ->
+            conn
+            |> put_flash(:info, "Match created for #{collection.name}")
+            |> redirect(to: ~p"/collections/#{id}")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            IO.inspect(changeset)
+            [{field, {msg, _}} | _] = changeset.errors
+
+            conn
+            |> put_flash(:error, "Creating match failed for field #{field} with '#{msg}'")
+            |> redirect(to: ~p"/collections/#{id}")
+        end
+
+      {:error, msg} ->
         conn
-        |> put_flash(:info, "Match created for #{collection.name}")
-        |> redirect(to: ~p"/collections/#{id}")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
-        [{field, {msg, _}} | _] = changeset.errors
-
-        conn
-        |> put_flash(:error, "Creating match failed for field #{field} with '#{msg}'")
+        |> put_flash(:error, "Creating match failed with '#{msg}'")
         |> redirect(to: ~p"/collections/#{id}")
     end
   end
@@ -250,7 +255,7 @@ defmodule ElixirRotationWeb.CollectionController do
   """
   def resolve_assignments({person_id, assigned_tasks}, people, tasks) do
     {id, _} = Integer.parse(person_id)
-    person = Enum.find(people, fn p -> p.id == id  end)
+    person = Enum.find(people, fn p -> p.id == id end)
     tasks = Enum.filter(tasks, fn t -> Enum.any?(assigned_tasks, fn at -> at == t.id end) end)
     {person, tasks}
   end
@@ -261,13 +266,16 @@ defmodule ElixirRotationWeb.CollectionController do
 
   def resolve_assignments(matches) do
     matches = Enum.map(matches, fn m -> Map.put(m, :assignment, Map.to_list(m.assignment)) end)
-    matches =  Enum.map(matches, fn m ->
+
+    matches =
+      Enum.map(matches, fn m ->
         Map.put(
           m,
           :assignment,
           resolve_assignments(m.assignment, m.people, m.tasks)
         )
-    end)
+      end)
+
     Enum.with_index(matches)
   end
 end
