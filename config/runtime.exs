@@ -29,7 +29,6 @@ if config_env() == :prod do
       """
 
   config :elixir_rotation, ElixirRotation.Repo,
-    adapter: Ecto.Adapters.Postgres,
     ssl: true,
     database: database_path,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "2")
