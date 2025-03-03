@@ -22,7 +22,7 @@ defmodule ElixirRotation.Application do
       # Start to serve requests, typically the last entry
       ElixirRotationWeb.Endpoint,
       # The quantum scheduler
-      ElixirRotation.Scheduler
+      # ElixirRotation.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
