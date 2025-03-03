@@ -29,9 +29,15 @@ if config_env() == :prod do
       """
 
   config :elixir_rotation, ElixirRotation.Repo,
+      adapter: Ecto.Adapters.Postgres,
+    url: System.get_env("DATABASE_URL"),
     ssl: true,
-    database: database_path,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "2")
+    pool_size: 2 # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections where n is the number of app replicas.
+
+  # adapter: Ecto.Adapters.Postgres,
+  #   ssl: true,
+  #   database: database_path,
+  #   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "2")
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
@@ -45,16 +51,22 @@ if config_env() == :prod do
   #     You can generate one by calling: mix phx.gen.secret
   #     """
 
-#  host = System.get_env("PHX_HOST") || "example.com"
+  #  host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :elixir_rotation, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   config :elixir_rotation, ElixirRotationWeb.Endpoint,
-    server: true,
+    # Possibly not needed, but doesn't hurt
+    http: [port: {:system, "PORT"}],
+    url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 443],
     secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
-    http: [port: port], # Possibly not needed, but doesn't hurt
-    url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 443, scheme: "https"]
+    server: true
+
+  # server: true,
+  # secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
+  # http: [port: port], # Possibly not needed, but doesn't hurt
+  # url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 443, scheme: "https"]
 
   #    url: [host: host, port: 443, scheme: "https"],
   #   http: [
