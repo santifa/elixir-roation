@@ -1,7 +1,4 @@
 defmodule ElixirRotationWeb.DashboardController do
-  alias ElixirRotation.Tasks
-  alias ElixirRotation.People
-  alias ElixirRotation.Collections
   use ElixirRotationWeb, :controller
 
   def index(conn, _params) do
