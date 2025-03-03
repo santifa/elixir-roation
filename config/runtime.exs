@@ -55,7 +55,7 @@ if config_env() == :prod do
     secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
     # Possibly not needed, but doesn't hurt
     http: [port: port],
-    url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 443, scheme: "https"],
+    url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 4000, scheme: "https"],
     check_origin: ["https://" <> System.get_env("APP_NAME") <> ".gigalixirapp.com"]
 
   #    url: [host: host, port: 443, scheme: "https"],
