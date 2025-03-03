@@ -51,12 +51,10 @@ if config_env() == :prod do
   config :elixir_rotation, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   config :elixir_rotation, ElixirRotationWeb.Endpoint,
-    http: [:inet6, port: port],
-    url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com",  port: 443],
-    secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
     server: true,
-    # Possibly not needed, but doesn't hurt
-    check_origin: ["https://" <> System.get_env("APP_NAME") <> ".gigalixirapp.com"]
+    secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
+    http: [port: port], # Possibly not needed, but doesn't hurt
+    url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 443, scheme: "https"]
 
   #    url: [host: host, port: 443, scheme: "https"],
   #   http: [
